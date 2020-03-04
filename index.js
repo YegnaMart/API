@@ -4,6 +4,10 @@ const cors = require("cors");
 const dotenv = require('dotenv');
 const connectDB = require("./config/db");
 const user = require('./routes/user.router');
+const product = require('./routes/product.route');
+
+// configure authentication middleware
+const {checkAuth} = require('./middleware/check-auth');
 
 
 const app = express();
@@ -22,6 +26,7 @@ app.use(cors()); // to enable cross origin resource sharing
 app.use(express.json()); 
 app.use(morgan("dev"));
 app.use('/user',user);
+app.use('/product',product);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

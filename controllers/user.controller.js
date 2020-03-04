@@ -104,7 +104,7 @@ exports.sendopt = (req, res) => {
     client.messages.create({
       body: "set up twilio",
       from: "(205) 301-7143",
-      to: req.body.phoneNo
+      to: "(+251)936972697"
     }).then(() =>{
         res.status(200).json({
             message: 'rahhhhhhhhhhhhhhh we good'
