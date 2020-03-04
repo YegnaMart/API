@@ -2,7 +2,12 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+
+// @configure database connection
 const connectDB = require("./config/db");
+
+// import the router in which the the request directed into
 const user = require('./routes/user.router');
 const product = require('./routes/product.route');
 
@@ -24,7 +29,10 @@ app.get("/", (req, res) => {
 
 app.use(cors()); // to enable cross origin resource sharing
 app.use(express.json()); 
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
+mongoose.set("useCreateIndex", true);
+mongoose.set("useFindAndModify", false);
 app.use('/user',user);
 app.use('/product',product);
 
