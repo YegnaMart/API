@@ -3,8 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 let User = require("../models/user.model");
 
-const accountSid = "AC60d328d5fd67c1e8b6c911286f577f36";
-const authToken = "3b869557c24f74bb7dd3652dca916246";
+// const accountSid = "Yonas-AC60d328d5fd67c1e8b6c911286f577f36";
+// const authToken = "Yonas-3b869557c24f74bb7dd3652dca916246";
 const client = require("twilio")(accountSid, authToken);
 
 // @user/register
