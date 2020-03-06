@@ -8,8 +8,10 @@ const mongoose = require('mongoose');
 const connectDB = require("./config/db");
 
 // import the router in which the the request directed into
-const user = require('./routes/user.router');
-const product = require('./routes/product.route');
+const userRouter = require('./routes/user.router');
+const productRouter = require('./routes/product.route');
+const orderRouter = require('./routes/order.route');
+const bidRouter = require('./routes/bid.route')
 
 // configure authentication middleware
 const {checkAuth} = require('./middleware/check-auth');
@@ -33,8 +35,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
 mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", false);
-app.use('/user',user);
-app.use('/product',product);
+app.use('/user',userRouter);
+app.use('/product',productRouter);
+app.use('/order', orderRouter);
+app.use('/bid', bidRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
