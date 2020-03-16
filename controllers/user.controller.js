@@ -5,7 +5,7 @@ let User = require("../models/user.model");
 
 // const accountSid = "Yonas-AC60d328d5fd67c1e8b6c911286f577f36";
 // const authToken = "Yonas-3b869557c24f74bb7dd3652dca916246";
-const client = require("twilio")(accountSid, authToken);
+// const client = require("twilio")(accountSid, authToken);
 
 // @user/register
 // @ create the account for guest users
@@ -100,18 +100,18 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.sendopt = (req, res) => {
-    client.messages.create({
-      body: "set up twilio",
-      from: "(205) 301-7143",
-      to: "(+251)936972697"
-    }).then(() =>{
-        res.status(200).json({
-            message: 'rahhhhhhhhhhhhhhh we good'
-        });
-    }).catch(err => {
-        res.status(500).json({
-            message: 'unable to send otp'
-        });
-    });
-}
+// exports.sendopt = (req, res) => {
+//     client.messages.create({
+//       body: "set up twilio",
+//       from: "(205) 301-7143",
+//       to: "(+251)936972697"
+//     }).then(() =>{
+//         res.status(200).json({
+//             message: 'rahhhhhhhhhhhhhhh we good'
+//         });
+//     }).catch(err => {
+//         res.status(500).json({
+//             message: 'unable to send otp'
+//         });
+//     });
+// }

@@ -1,6 +1,6 @@
 const Bid = require("../models/bid.model");
 const Product = require("../models/product.model");
-
+const moment = require('moment');
 // @bid/get_bids
 // @ get all bids
 // access authentic
@@ -11,6 +11,7 @@ exports.get_bids = async (req, res) => {
       .populate("product")
       .sort({ biddingPrice: -1 });
     res.status(200).json({
+      bid:bids.length,
       success: true,
       data: bids
     });
@@ -35,14 +36,20 @@ exports.create_a_bid = async (req, res) => {
       initialFee: req.body.initialFee,
       product: product._id,
       biddingPrice: req.body.biddingPrice,
-      closingDate: req.body.closingDate
+      closingDate: moment(req.body.closingDate).format(
+        "MMMM Do YYYY, h:mm:ss a"
+      )
     });
 
-    let result = bid.save();
-    res.status(201).json({
+     bid.save().then(result => {
+      res.status(201).json({
       success: true,
       data: result
     });
+    }).catch(err => {
+      res.status(404).json(err);
+    });
+    
   } catch (error) {
     const messages = Object.values(error.errors).map(value => value.message);
     return res.status(500).json({
@@ -62,12 +69,13 @@ exports.delete_a_bid = async (req, res) => {
     let deletedBid = await Bid.findByIdAndDelete(id);
     res.status(200).json({
         success: true,
+        message :'bid deleted',
         data: deletedBid
     });
   } catch (error) {
       const messages = Object.values(error.errors).map(value => value.message);
-      return res.status(500).json({
-        message: "unable to signup",
+      return res.status(404).json({
+        message: "unable to delete bid",
         error: messages
       });
   }
