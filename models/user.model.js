@@ -1,28 +1,35 @@
-const mongoose = require('mongoose');
-const userSchema = new mongoose.Schema({
+const { Schema, model } = require('mongoose');
+const userSchema = new Schema({
   fullName: {
     type: String,
-    required: true
+    required: true,
   },
   phoneNo: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
   },
   password: {
-      type: String,
-      required: true
+    type: String,
+    required: true,
   },
   role: {
     type: String,
     default: 'Farmer',
-    enum: ['Farmer','DeliveryPersonnel', 'Admin','Consumer','DeliveryAgent', 'Bidders']
-  }
+    enum: [
+      'Farmer',
+      'DeliveryPersonnel',
+      'Admin',
+      'Consumer',
+      'DeliveryAgent',
+      'Bidders',
+    ],
+  },
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = model('User', userSchema);

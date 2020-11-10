@@ -1,7 +1,7 @@
 const express = require('express');
 const userRouter = express.Router();
 
-const { register, login, sendopt } = require('../controllers/user.controller');
+const { register, login } = require('../controllers/user.controller');
 
 // show the pathway to register request
 userRouter.route('/register').post(register);

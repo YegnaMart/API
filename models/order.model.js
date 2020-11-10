@@ -1,19 +1,19 @@
-const mongoose = require('mongoose');
-const orderSchema = mongoose.Schema({
+const { Schema, model } = require('mongoose');
+const orderSchema = new Schema({
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: [true, 'the Product to be order should be specified']
+    ref: 'Product',
+    required: [true, 'the Product to be order should be specified'],
   },
   description: {
-      type: String,
-      required: true,
-      min: [50, 'the product order needs clear specification']
+    type: String,
+    required: true,
+    min: [50, 'the product order needs clear specification'],
   },
   date: {
-      type: Date,
-      default: Date.now
-  }
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+module.exports = model('Order', orderSchema);

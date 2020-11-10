@@ -1,28 +1,28 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 const moment = require('moment');
 
-const bidSchema = mongoose.Schema({
+const bidSchema = new Schema({
   initialFee: {
     type: Number,
-    required: [true, "You should pay the un returnable fee to bid"]
+    required: [true, 'You should pay the un returnable fee to bid'],
   },
   product: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true
+    ref: 'Product',
+    required: true,
   },
   biddingPrice: {
     type: Number,
-    required: true
+    required: true,
   },
   startingDate: {
     type: String,
-    default: moment(new Date()).format("Do MMMM, YYYY [at] h:mm a")
+    default: moment(new Date()).format('Do MMMM, YYYY [at] h:mm a'),
   },
   closingDate: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-module.exports = mongoose.model('Bid',bidSchema)
+module.exports = model('Bid', bidSchema);
