@@ -7,7 +7,7 @@ const bidSchema = new Schema({
     required: [true, 'You should pay the un returnable fee to bid'],
   },
   product: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Product',
     required: true,
   },

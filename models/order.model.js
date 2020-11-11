@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const orderSchema = new Schema({
   product: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Product',
     required: [true, 'the Product to be order should be specified'],
   },

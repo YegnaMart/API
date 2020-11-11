@@ -13,10 +13,6 @@ const productRouter = require('./routes/product.route');
 const orderRouter = require('./routes/order.route');
 const bidRouter = require('./routes/bid.route')
 
-// configure authentication middleware
-const {checkAuth} = require('./middleware/check-auth');
-
-
 const app = express();
 
 // config the directory
