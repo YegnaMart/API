@@ -1,11 +1,34 @@
 const express = require('express');
 const bidRouter = express.Router();
 
-const {get_bids, create_a_bid, delete_a_bid} = require('../controllers/bid.controller')
+const {
+  getBids,
+  announceBid,
+  openBid,
+  closeBid,
+} = require('../controllers/bid.controller');
 
+/**
+ * get the bid that have been made
+ */
+bidRouter.get('/get_bids', async () => {
+  await getBids();
+});
 
-bidRouter.route('/get_bids').get(get_bids);
-bidRouter.route('/create_bid/:productId').post(create_a_bid);
-bidRouter.route('/delete_bid/:bidId').delete(delete_a_bid);
+/**
+ * announce bid
+ */
+bidRouter.post('/announce_bid/:productId', async () => {
+  await announceBid();
+});
+/**
+ * open a bid
+ */
+bidRouter.post('/create_bid/:productId', async () => await openBid());
+
+/**
+ * closed the bid which have a winner
+ */
+bidRouter.delete('/close_bid/:bidId', async () => await closeBid());
 
 module.exports = bidRouter;

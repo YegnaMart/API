@@ -26,6 +26,7 @@ const userSchema = new Schema({
       'DeliveryPersonnel',
       'Admin',
       'Consumer',
+      'StockManager',
       'DeliveryAgent',
       'Bidders',
     ],
