@@ -11,16 +11,12 @@ const {
 /**
  * get the bid that have been made
  */
-bidRouter.get('/get_bids', async () => {
-  await getBids();
-});
+bidRouter.get('/get_bids', getBids);
 
 /**
  * announce bid
  */
-bidRouter.post('/announce_bid/:productId', async () => {
-  await announceBid();
-});
+bidRouter.post('/announce_bid/:productId', announceBid);
 /**
  * open a bid
  */

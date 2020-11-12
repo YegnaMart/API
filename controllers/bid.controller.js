@@ -7,18 +7,10 @@ const moment = require('moment');
 
 const getBids = async (req, res) => {
   try {
-    let bids = await Bid.find().populate('product').sort({ biddingPrice: -1 });
-    res.status(200).json({
-      bid: bids.length,
-      success: true,
-      data: bids,
-    });
+    let bids = await Bid.find();
+    return res.status(200).json(bids[1]);
   } catch (error) {
-    const messages = Object.values(error.errors).map((value) => value.message);
-    return res.status(500).json({
-      message: 'unable to signup',
-      error: messages,
-    });
+    console.log(error);
   }
 };
 
@@ -29,26 +21,35 @@ const announceBid = async (req, res) => {
   try {
     //get product id
     let productId = req.params.productId;
+    console.log(productId);
+    let product = await Product.findById(productId);
 
-    const product = await Product.findOne({ productId });
-    let result = {
-      ...product,
-      openingData: Date,
-      closingDate: Date,
+    // specify details about product in announcement
+    let date = new Date().getTime();
+    let announcementDetail = {
+      _id: product._id,
+      productName: product.cropType,
+      region: product.region,
+      amount: product.amount,
+      grade: product.cropGrade,
+      fertilizer: product.fertilizer,
+      openingDate: moment(req.body.openingDate).format('YYYY/MM/DD'),
+      closingDate: moment(req.body.closingDate).format('YYYY/MM/DD'),
     };
 
-    res.status(200).json({
-      result,
-      success: true,
-    });
-
-    if (result.closingDate) {
+    // close if the closing date is today
+    if (announcementDetail.closingDate === moment().format('YYYY/MM/DD')) {
       await Product.findOneAndDelete({ productId });
       res.status(200).json({
         message: 'bid announcement successfully deleted',
         success: true,
       });
     }
+
+    return res.status(200).json({
+      announcementDetail,
+      success: true,
+    });
   } catch (error) {
     res.status(500).json({
       message: 'unable to open a bid',
