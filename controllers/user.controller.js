@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-let User = require('../models/user.model');
 
+let config = require('../config/config');
+let User = require('../models/user.model');
+let client = require('twilio')(config.accountSID, config.authToken);
 // @user/register
 // @ create the account for  users
 // access Public
@@ -58,7 +59,6 @@ const registerUser = async (userData, role, res) => {
 // access Public
 const logUser = async (userData, role, res) => {
   let { phoneNo, password } = userData;
-
   /**
    * check if any user is registered with phoneNo.
    */
@@ -81,6 +81,7 @@ const logUser = async (userData, role, res) => {
 
   // check if the entered password is valid
   let passwordMatched = await bcrypt.compare(password, user.password);
+  console.log(passwordMatched);
   if (passwordMatched) {
     let token = jwt.sign(
       {
@@ -113,6 +114,93 @@ const logUser = async (userData, role, res) => {
       message: 'incorrect password',
       success: false,
     });
+  }
+};
+
+/**
+ *
+ * @ Reset Password {*} with  phoneNo by aid of OTP
+ */
+
+const resetPassword = (req, res) => {
+  try {
+    let phone = req.params.phoneNo;
+    User.findOne({ phoneNo: phone })
+      .then((result) => {
+        if (result.password != null) {
+          bcrypt.hash(req.body.password, 10).then((hashedPassword) => {
+            result.password = hashedPassword;
+
+            result
+              .save()
+              .then((data) => {
+                res.status(201).json({
+                  data,
+                });
+              })
+              .catch((err) => {
+                res.json({
+                  message: 'unable to update password',
+                  success: false,
+                });
+              });
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: 'unable to reset password',
+          err,
+        });
+      });
+  } catch (error) {}
+};
+
+
+/**
+ * 
+ * @ update user detail
+ */
+
+ let updateUserDetails = async (req,res) => {
+
+ }
+
+
+/**
+ *
+ * @ Request Verification Code
+ */
+const getVerificationCode = async (userInput) => {
+  try {
+    let data = await client.verify
+      .services(config.serviceID)
+      .verifications.create({
+        to: `+${userInput.phoneNo}`,
+        channel: userInput.channel,
+      });
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
+
+/**
+ *
+ * @ Verify the code sent to phoneNo
+ */
+let verifyCode = async (userInput) => {
+  try {
+    let data = await client.verify
+      .services(config.serviceID)
+      .verificationChecks.create({
+        to: `+${userInput.phoneNo}`,
+        code: userInput.code,
+      });
+
+    return data;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -161,4 +249,7 @@ module.exports = {
   logUser,
   checkRole,
   serializeUser,
+  getVerificationCode,
+  verifyCode,
+  resetPassword,
 };

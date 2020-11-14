@@ -6,6 +6,9 @@ const {
   logUser,
   checkRole,
   serializeUser,
+  getVerificationCode,
+  verifyCode,
+  resetPassword,
 } = require('../controllers/user.controller');
 const { checkAuth } = require('../middleware/check-auth');
 // @user/register_consumer
@@ -53,6 +56,24 @@ userRouter.post('/log_admin', async (req, res) => {
   await logUser(req.body, 'Admin', res);
 });
 
+/**
+ * get verification route
+ */
+userRouter.post(
+  '/get_verification_code',
+  async (req, res) => await getVerificationCode(req.body)
+);
+
+/**
+ * check the code
+ */
+
+userRouter.post('/verify_code', async (req, res) => await verifyCode(req.body));
+
+/**
+ * reset password
+ */
+userRouter.post('/reset_password/:phoneNo', resetPassword);
 //@consumer Protected route
 userRouter.get(
   '/consumer_profile',

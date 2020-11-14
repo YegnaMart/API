@@ -11,7 +11,7 @@ const { checkAuth } = require('../middleware/check-auth');
 
 productRouter.route('/get_products').get(get_products);
 productRouter.route('/post_product').post(checkAuth, post_product);
-productRouter.route(`/edit_product/:product_id`).post(edit_product);
+productRouter.route('/edit_product/:product_id').post(edit_product);
 productRouter.route('/delete_product/:product_id').delete(delete_product);
 
 module.exports = productRouter;

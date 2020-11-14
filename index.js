@@ -1,40 +1,42 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 // @configure database connection
-const connectDB = require("./config/db");
+const connectDB = require('./config/db');
 
 // import the router in which the the request directed into
 const userRouter = require('./routes/user.router');
 const productRouter = require('./routes/product.route');
 const orderRouter = require('./routes/order.route');
-const bidRouter = require('./routes/bid.route')
-
+const bidRouter = require('./routes/bid.route');
+const feedbackRouter = require('./routes/feedback.route');
+// create instance of the app
 const app = express();
 
 // config the directory
-dotenv.config({ path: "./config/.env" });
+dotenv.config({ path: './config/.env' });
 
 // connect to database
 connectDB();
 
-app.get("/", (req, res) => {
-  res.json({ message: "YegnaMart Kick start" });
+app.get('/', (req, res) => {
+  res.json({ message: 'YegnaMart Kick start' });
 });
 
 app.use(cors()); // to enable cross origin resource sharing
-app.use(express.json()); 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(morgan("dev"));
-mongoose.set("useCreateIndex", true);
-mongoose.set("useFindAndModify", false);
-app.use('/user',userRouter);
-app.use('/product',productRouter);
+app.use(morgan('dev'));
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
+app.use('/user', userRouter);
+app.use('/product', productRouter);
 app.use('/order', orderRouter);
 app.use('/bid', bidRouter);
+app.use('/feedback', feedbackRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
