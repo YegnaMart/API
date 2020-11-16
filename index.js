@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 
 app.use(cors()); // to enable cross origin resource sharing
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 mongoose.set('useCreateIndex', true);

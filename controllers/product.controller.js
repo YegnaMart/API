@@ -8,7 +8,7 @@ let Product = require('../models/product.model');
 const get_products = async (req, res) => {
   try {
     const product = await Product.find().select(
-      'cropType amount cropGrade region fertilizer'
+      'cropType amount cropGrade region fertilizer pictures'
     );
     return res.status(200).json({
       productAmount: product.length,
@@ -53,7 +53,14 @@ const edit_product = async (req, res) => {
   try {
     const id = req.params.product_id;
     console.log(id);
-    const { cropType, amount, cropGrade, region, fertilizer } = req.body;
+    const {
+      cropType,
+      amount,
+      cropGrade,
+      region,
+      fertilizer,
+      pictures,
+    } = req.body;
     await Product.findByIdAndUpdate(id, {
       $set: {
         cropType: cropType,
@@ -61,6 +68,7 @@ const edit_product = async (req, res) => {
         cropGrade: cropGrade,
         region: region,
         fertilizer: fertilizer,
+        images: pictures,
       },
     })
       .then((result) => {
