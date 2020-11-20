@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
 
   auth: {
 
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
+    user:"misge1898@gmail.com",
+    pass:"mehari12old2bro"
 
   }
 });
@@ -173,12 +173,7 @@ const userLogin = async (userCreds, role, res) => {
       success: false
     });
   }
-  // confirm that user typed same password twice
-  // if (req.body.password !== req.body.confirmPassword) {
-  //   var err = new Error('Passwords do not match.');
-  //   err.status = 400;
-  //   return next(err);
-  // }
+
   // Now check for the password user entered with password in db
   let isMatch = bcrypt.compare(password, user.password);
   if (isMatch) {
@@ -224,8 +219,8 @@ const checkPhoneNumber = async (phoneNo) => {
 };
 
 
-//reset password controller
-exports.resetPasswordRequest = async (req, res) => {
+//forgot password controller
+exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -239,27 +234,32 @@ exports.resetPasswordRequest = async (req, res) => {
     //if exist
     const token = jwt.sign({
       user_id: user._id
-    }, process.env.JWT_PASSWORD_RESET,
-      { expiresIn: "30m" })
+    },
+     process.env.JWT_PASSWORD_RESET,
+    { 
+      expiresIn: "10m" 
+    });
 
-
-    const emailData = {
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: "Password reset Link",
-      html: `<h1> Please click the link to reset</h1>
-        <p>${process.env.CLEINT_URL}/users/password/reset/${token}</p>`
-    };
     await User.updateOne({
       passwordResetToken: token
     });
+
+    //prepare the data to be emaild
+    const emailData = {
+      from: "misge1898@gmail.com",
+      to: email,
+      subject: " YegnaMart Password reset",
+      html: `<h1> Please click the link to reset</h1>
+        <p>${process.env.CLEINT_URL}/users/password/reset/${token}</p>`
+    };
+
     transporter.sendMail(emailData);
-    console.log("Email sent");
     res.status(200).json({
-      message: "Successfully sent email"
+      message: 'An email has been sent to your email. Password reset link is only valid for 10 minutes.'
     });
 
-  } catch (err) {
+  }
+  catch (err) {
     return res.status(401).json({
       message: "error "
     });
@@ -274,47 +274,40 @@ exports.resetPasswordRequest = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const { passwordResetToken, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const newPassword = req.body.passsword;
+    const sentToken = req.body.passwordResetToken;
+    const user = await User.findOne({passwordResetToken:sentToken});
+    if(!user){
+      return res.status(422).json({
+        message:"Try again Session is expired"
+      });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword,12);
+    user.password = hashedPassword;
+    user.passwordResetToken =undefined
 
-    if (passwordResetToken) {
-      jwt.verify(passwordResetToken.process.env.JWT_PASSWORD_RESET, (err, decoded) => {
-        if (err) {
-          return res.status(400).json({
-            error: "The token is expire"
-          });
-        }
-        User.findOne({ passwordResetToken }, (err, user) => {
-          if (err) {
-            return res.status(400).json({
-              error: "Incorrect token"
-            });
-          }
-          const updatedFields = {
-            password: hashedPassword,
-            passwordResetToken: ""
-          }
-          user = _.extend(user, updatedFields);
-          user.save((err, result) => {
-            if (err) {
-              return res.status(400).json({
-                error: "Error reseting user password"
-              });
-            }
-            res.json({
-              message: "Greet! now you can login"
-            });
+    await user.save();
 
-          })
-        })
-      })
+    const data = {
+      to: email,
+      from: "misge1898@gmail.com",
+      html: 'reset-password',
+      subject: 'Password Reset Confirmation',
+      
     };
-
+    await transport.sendMail(data);
+   
+    res.status(200).json({
+       message: 'Your password is successfully reseted' 
+      });
+  
   }
 
-  catch (ex) {
-    getLogger.error(ex);
-    res.send(ex, 500);
+  catch (err) {
+    
+    return res.status(500).json({
+      err:"error occuring in resseting password"
+    });
 
   }
 

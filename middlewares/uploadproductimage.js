@@ -1,6 +1,7 @@
 const multer = require("multer");
 const path = require("path");
-
+ 
+//cb = callback
 const filterFile = (req, res, cb) => {
     if (file.mimetype === 'image/jpeg' ||
         file.mimetype === 'image/jpg'  ||

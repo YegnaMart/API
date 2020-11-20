@@ -21,7 +21,7 @@ router.post("/login-deliveryagent", UserController.deliveryAgentLogin);
 router.post("/login-deliverypersonnel", UserController.deliveryPersonnelLogin);
 router.post("/login-admin", UserController.adminLogin);
 //password reset routes
-router.post("/forgot-password",UserController.resetPasswordRequest);
+router.post("/forgot-password",UserController.forgotPassword);
 router.post("/reset-password",UserController.resetPassword );
 
 

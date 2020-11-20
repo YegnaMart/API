@@ -9,13 +9,16 @@ exports.postProduct = async (req, res) => {
             quantity: req.body.quantity,
             regionOfOrign: req.body.regionOfOrign,
             price: req.body.price,
+            productGrade:req.body.productGrade,
             description: req.body.description,
-            productImage: req.file.path
+            productImage: req.file.path,
+            postedBy:req.params._id //the usermuset be logged in user
 
         });
-        await product.save();
+        const newProduct = await product.save();
         return res.status(201).json({
-            message: "product added successfully"
+            message: "product added successfully",
+            ...newProduct
         });
     } catch (err) {
         return res.status(500).json({

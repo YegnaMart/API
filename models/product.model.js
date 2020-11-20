@@ -26,10 +26,14 @@ const productSchema = new Schema({
         },
       productImage: {
            type: String,
-            required: true
+            required: false
+         },
+        productGrade:{
+           type:String,
+           required:true
          },
     
-      userId: { 
+      postedBy: { 
           type:Schema.Types.ObjectId,
            ref: "User", required: true 
         }
