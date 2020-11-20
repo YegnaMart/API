@@ -44,23 +44,11 @@ const upload = multer({
 });
 
 productRouter.route('/get_products').get(get_products);
-productRouter.route('/post_product').post(
-  upload.fields([
-    {
-      name: 'pictures',
-      maxCount: 5,
-    },
-  ]),
-  checkAuth,
-  post_product
-);
+productRouter
+  .route('/post_product/')
+  .post(upload.single('productImage'), checkAuth, post_product);
 productRouter.route('/edit_product/:product_id').post(
-  upload.fields([
-    {
-      name: 'pictures',
-      maxCount: 5,
-    },
-  ]),
+  upload.single('productImage'),checkAuth,
   edit_product
 );
 productRouter.route('/delete_product/:product_id').delete(delete_product);

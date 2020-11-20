@@ -7,13 +7,12 @@ let Product = require('../models/product.model');
 
 const get_products = async (req, res) => {
   try {
-    const product = await Product.find().select(
-      'cropType amount cropGrade region fertilizer pictures'
+    const product = await Product.find().populate(
+      'postedBy',
+      'user_id fullName'
     );
     return res.status(200).json({
-      productAmount: product.length,
       success: true,
-      message: 'data found',
       product: product,
     });
   } catch (error) {
@@ -29,9 +28,29 @@ const get_products = async (req, res) => {
 // @ post product
 // access authentic/must login to their account
 const post_product = async (req, res) => {
+  let postedBy = req.user.user_id;
   try {
-    const { cropType, amount, cropGrade, region, fertilizer } = req.body;
-    const product = await Product.create(req.body);
+    const {
+      productName,
+      category,
+      quantity,
+      regionOfOrigin,
+      price,
+      desciption,
+    } = req.body;
+
+    let new_product = new Product({
+      productName,
+      category,
+      quantity,
+      regionOfOrigin,
+      price,
+      desciption,
+      productImage: req.file.path,
+      postedBy,
+    });
+
+    const product = await new_product.save();
     return res.status(201).json({
       sucess: true,
       data: product,
@@ -53,22 +72,12 @@ const edit_product = async (req, res) => {
   try {
     const id = req.params.product_id;
     console.log(id);
-    const {
-      cropType,
-      amount,
-      cropGrade,
-      region,
-      fertilizer,
-      pictures,
-    } = req.body;
+    const { quantity, price, desciption } = req.body;
     await Product.findByIdAndUpdate(id, {
       $set: {
-        cropType: cropType,
-        amount: amount,
-        cropGrade: cropGrade,
-        region: region,
-        fertilizer: fertilizer,
-        images: pictures,
+        quantity: quantity,
+        price: price,
+        desciption: desciption,
       },
     })
       .then((result) => {

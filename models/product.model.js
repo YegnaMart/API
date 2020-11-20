@@ -1,28 +1,38 @@
 const { Schema, model } = require('mongoose');
 
 const productSchema = new Schema({
-  cropType: {
+  productName: {
     type: String,
     required: true,
   },
-  amount: {
+  category: {
+    type: String,
+    required: true,
+  },
+  quantity: {
     type: Number,
     required: true,
-    default: 1,
   },
-  cropGrade: {
-    type: String,
-    required: true,
-    default: 'A',
-  },
-  region: {
+  regionOfOrigin: {
     type: String,
     required: true,
   },
-  fertilizer: {
+  price: {
+    type: Number,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  productImage: {
     type: String,
     required: true,
-    default: 'Nothing',
+  },
+
+  postedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
 });
 
