@@ -21,7 +21,7 @@ const availableDelivery = async (req, res) => {
 
 const add_delivery = async (req, res) => {
   try {
-    const delivery_id = req.params.delivery_id;
+    const delivery_id = req.params.deliveryId;
 
     let { pickup_location, dropoff_location, quintal_per_km } = req.body;
 
@@ -48,7 +48,7 @@ const add_delivery = async (req, res) => {
 
 const edit_delivery_detail = async (req, res) => {
   try {
-    const delivery_id = req.params.delivery_id;
+    const delivery_id = req.params.deliveryId;
 
     let { pickup_location, dropoff_location, quintal_per_km } = req.body;
 
