@@ -10,8 +10,8 @@ const warehouseSchema = new Schema({
     required: true,
   },
   location: {
-    type: Schema.Types.ObjectId,
-    ref: 'Location',
+    type: String,
+    required:true ,
   },
   region: {
     type: String,

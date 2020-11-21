@@ -2,7 +2,7 @@ const Warehouse = require('../models/warehouse.model');
 
 const getWarehouses = async (req, res) => {
   try {
-    const warehouses = await Warehouse.find().populate('location');
+    const warehouses = await Warehouse.find();
     return res.status(200).json({
       warehouses,
       success: true,

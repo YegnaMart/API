@@ -11,12 +11,12 @@ const vehicleSchema = new Schema(
       required: true,
     },
     loadCapacity: {
-      type: String,
+      type: Number,
       required: true,
     },
 
     plateNo: {
-      type: Number,
+      type: String,
       required: true,
     },
     color: {

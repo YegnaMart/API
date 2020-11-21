@@ -97,6 +97,7 @@ const logUser = async (userData, role, res) => {
 
     // check the result
     let result = {
+      fullName: user.fullName,
       email: user.email,
       phoneNo: user.phoneNo,
       role: user.role,
