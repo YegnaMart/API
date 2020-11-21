@@ -8,7 +8,7 @@ let client = require('twilio')(config.accountSID, config.authToken);
 // @ create the account for  users
 // access Public
 
-const registerUser = async (userData, role, res) => {
+const registerUser = async (userData, res) => {
   try {
     //check if phone number already exists
     let phoneNoTaken = await validatePhoneNumber(userData.phoneNo);
@@ -36,7 +36,6 @@ const registerUser = async (userData, role, res) => {
     const newUser = new User({
       ...userData,
       password: hashedPassword,
-      role,
     });
 
     // register user into the database
@@ -57,31 +56,20 @@ const registerUser = async (userData, role, res) => {
 // @user/login
 // @ create the account for  users
 // access Public
-const logUser = async (userData, role, res) => {
+const logUser = async (userData, res) => {
   let { phoneNo, password } = userData;
   /**
    * check if any user is registered with phoneNo.
    */
-  let user = await User.findOne({ phoneNo });
+  let user = await User.findOne({ phoneNo }).populate('location');
   if (!user) {
     return res.status(404).json({
       message: 'PhoneNo no found, invalid login credentials',
       success: false,
     });
   }
-
-  // check if the user have right credential with right role
-  if (user.role != role) {
-    return res.status(404).json({
-      message:
-        'unAuthorized user, please make sure You logged in from the right portal',
-      success: false,
-    });
-  }
-
   // check if the entered password is valid
   let passwordMatched = await bcrypt.compare(password, user.password);
-  console.log(passwordMatched);
   if (passwordMatched) {
     let token = jwt.sign(
       {
@@ -157,16 +145,12 @@ const resetPassword = (req, res) => {
   } catch (error) {}
 };
 
-
 /**
- * 
+ *
  * @ update user detail
  */
 
- let updateUserDetails = async (req,res) => {
-
- }
-
+let updateUserDetails = async (req, res) => {};
 
 /**
  *

@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const locationSchema = require('./location.model')
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -30,6 +31,9 @@ const userSchema = new Schema({
       'DeliveryAgent',
       'Bidders',
     ],
+  },
+  location: {
+    type: locationSchema
   },
 });
 

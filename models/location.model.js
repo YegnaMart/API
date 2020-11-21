@@ -1,18 +1,15 @@
 const { Schema, model } = require('mongoose');
 
-const locationSchema = new Schema({
-  latitude: {
-    type: Number,
-    required: true,
+exports.locationSchema = new Schema({
+  name: {
+    type: String,
   },
-  longitude: {
-    type: Number,
-    required: true,
-  },
-  relativeLocation: {
+  placeName: {
     type: String,
     required: true,
   },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
 });
-
-module.exports = model('Location', locationSchema);

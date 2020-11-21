@@ -14,46 +14,16 @@ const { checkAuth } = require('../middleware/check-auth');
 // @user/register_consumer
 // @ create the account for  users
 // access Public
-userRouter.post('/register_consumer', async (req, res) => {
-  await registerUser(req.body, 'Consumer', res);
-});
-
-// @user/register_farmer
-// @ create the account for  farmers
-// access Public
-userRouter.post('/register_farmer', async (req, res) => {
-  await registerUser(req.body, 'Farmer', res);
-});
-
-// @user/register admin
-// @ create the admin account
-// access Private
-userRouter.post('/register_admin', async (req, res) => {
-  await registerUser(req.body, 'Admin', res);
+userRouter.post('/register', async (req, res) => {
+  await registerUser(req.body, res);
 });
 
 // @user/log_consumer
 // @ create the account for  users
 // access Public
 
-userRouter.post('/log_consumer', async (req, res) => {
-  await logUser(req.body, 'Consumer', res);
-});
-
-// @user/log_farmer
-// @ log into the account for  users
-// access Public
-
-userRouter.post('/log_farmer', async (req, res) => {
-  await logUser(req.body, 'Farmer', res);
-});
-
-// @user/log_admin
-// @ log admin account
-// access Private
-
-userRouter.post('/log_admin', async (req, res) => {
-  await logUser(req.body, 'Admin', res);
+userRouter.post('/login', async (req, res) => {
+  await logUser(req.body, res);
 });
 
 /**
