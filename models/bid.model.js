@@ -1,52 +1,49 @@
-const {Schema,model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const bidSchema = new Schema({
-    productName:{
-        type:String,
-        required:true
-    },
-    description:{
-        type:String,
-        required:true
-    },
-    image:{
-        type:String,
-        required:true
+
+    productName: {
+        type: String,
+        trim: true,
+        required: 'Product name is required'
     },
     initialFee: {
-           type: Number,
-            required: true
-         },
-    
-    category: { 
-        type: Schema.Types.ObjectId,
-        ref: "Product", required: true
-     },
-    bidStart:{
-         type:Date,
-         required:true
-     },
-    bidEnd:{
-         type:Date,
-         required:true
-     },
-    startingBidPrice:{
-         type:Number,
-         required:true
-     },
-    warehouseId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Warehouse"
+        type: Number,
+        required: true
     },
-    bids: [{
-        bidder: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'User'
-        },
-        bid: Number,//the number of bids
-        time: Date
-      }]
+    description: {
+        type: String,
+        trim: true
+    },
+    image: {
+        type: String,
+        required: false
+    },
 
-    },{timestamps:true});
-    
-    module.exports = model("Bid", bidSchema);
+    bidStart: {
+        type: String,
+        required:true
+    },
+    bidEnd: {
+        type: String,
+        required: true
+    },
+    postedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Warehouse'
+    },
+    startingBidPrice: {
+        type: Number,
+        default: 0
+    },
+
+    bidder: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    bidNo: Number,
+
+
+}, { timestamps: true })
+
+module.exports = model('Bid', bidSchema)

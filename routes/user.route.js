@@ -4,22 +4,8 @@ const {checkRole} = require("../middlewares/check_role");
 const UserController = require("../controllers/user.controller");
 
 // Users Registeration Route
-router.post("/register-farmer", UserController.registerFarmer);
-router.post("/register-consumer", UserController.registerConsumer);
-router.post("/register-stockmanager",UserController.registerStockManager);
-router.post("/register-stockworker",UserController.registerStockWorker);
-router.post("/register-deliveryagent",UserController.registerDeliveryAgent);
-router.post("/register-deliverypersonnel",UserController.registerDeliveryPersonnel);
-router.post("/register-admin",UserController.registerAdmin);
-
-// user Login Route
-router.post("/login-farmer",UserController.farmerLogin);
-router.post("/login-consumer", UserController.consumerLogin);
-router.post("/login-stockmanager", UserController.stockManagerLogin);
-router.post("/login-stockworker", UserController.StockWorkerLogin);
-router.post("/login-deliveryagent", UserController.deliveryAgentLogin);
-router.post("/login-deliverypersonnel", UserController.deliveryPersonnelLogin);
-router.post("/login-admin", UserController.adminLogin);
+router.post("/register", UserController.userSignup);
+router.post("/login",UserController.userLogin);
 //password reset routes
 router.post("/forgot-password",UserController.forgotPassword);
 router.post("/reset-password",UserController.resetPassword );

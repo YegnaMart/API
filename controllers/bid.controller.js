@@ -1,34 +1,74 @@
-//const Product = require("../models/product.model");
-//const User = require("../models/user.model");
+const moment = require("moment");
 const Bid = require("../models/bid.model");
-const fs = require("fs");
-const path = require("path");
-const formidable = require("formidable");
 
+exports.createBid = async (req, res, next) => {
+  try {
+    //add new bids here
+    let new_bid = new Bid({
+      productName: req.body.productName,
+      initialFee: req.body.initialFee,
+      description: req.body.description,
+      startingBidPrice: req.body.startingBidPrice,
+      bidStart: moment(req.body.bidStart).format(
+        'MMMM Do YYYY, h:mm:ss a'
+      ),
+      bidEnd: moment(req.body.bidEnd).format(
+        'MMMM Do YYYY, h:mm:ss a'
+      ),
+      bidNo: req.body.bidNo,
+      postedBy,
+      bidder,
+      image: req.file.path
+    });
 
-exports.createBid = (req, res) => {
-    let form = new formidable.IncomingForm()
-    form.keepExtensions = true
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        res.status(400).json({
-          message: "Image could not be uploaded"
-        })
-      }
-      //fields are incomming form data
-      let bid = new Bid(fields)
-      bid.warehouse = req.profile
-      if(files.image){
-        bid.image.data = fs.readFileSync(files.image.path)
-        bid.image.contentType = files.image.type
-      }
-      try {
-        let result = await Bid.save()
-        res.status(200).json(result)
-      }catch (err){
-        return res.status(400).json({
-          error:"There is an error in posting bids"
-        })
-      }
-    })
+    let result = await new_bid.save();
+    res.status(200).json(result);
+    //next();
+  } catch (err) {
+    return res.status(400).json({
+      error: "Bid not added"
+    });
   }
+
+}
+
+exports.getBids = async (req, res, next) => {
+  try {
+    let bid = await Bid.find(req.params._id)
+      .populate("postedBy", "_id fullname")
+      //.populate("bidder", "_id warehouse_code");
+    if (!bid) {
+      return res.status(400).json({
+        error: "Bid not found"
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      bids: bid,
+    });
+    //next();
+
+  } catch (err) {
+    return res.status(400).json({
+      error: "Could not get bids"
+    });
+  }
+
+}
+
+exports.listOpenBid = async (req, res, next) => {
+  try {
+    let auction = await Bid.find({ bidEnd: { $gt: new Date() } })
+      .sort("bidStart")
+      .populate("seller", "_id,warehouse_code")
+      .populate("bidder", "_id fullname")
+    res.json(auction);
+
+  }
+  catch (err) {
+    return res.status(400).json({
+      error: "Error while geting open bids"
+    });
+
+  }
+}
