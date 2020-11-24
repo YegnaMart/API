@@ -1,10 +1,12 @@
 const Product = require("../models/product.model");
+const Order = require("../models/order.model");
 
 
 exports.postProduct = async (req, res) => {
     try {
+       ;
         const product = new Product({
-            productname: req.body.productname,
+            productName: req.body.productName,
             category: req.body.category,
             quantity: req.body.quantity,
             regionOfOrign: req.body.regionOfOrign,
@@ -12,7 +14,7 @@ exports.postProduct = async (req, res) => {
             productGrade:req.body.productGrade,
             description: req.body.description,
             productImage: req.file.path,
-            postedBy:req.params._id //the usermuset be logged in user
+            //the usermuset be logged in user
 
         });
         const newProduct = await product.save();
@@ -28,4 +30,7 @@ exports.postProduct = async (req, res) => {
     }
 }
 
+exports.oderProduct = async(req,res,next)=>{
 
+
+}

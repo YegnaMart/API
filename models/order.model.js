@@ -1,32 +1,36 @@
 const {Schema,model} = require("mongoose");
 
 const orderSchema = new Schema({
-    products: [CartItemSchema],
-    customer_name: {
-      type: String,
-      trim: true,
-      required: 'Name is required'
-    },
-    customer_email: {
-      type: String,
-      trim: true,
-      match: [/.+\@.+\..+/, 'Please fill a valid email address'],
-      required: 'Email is required'
-    },
-    delivery_address: {
-      street: {type: String, required: 'Street is required'},
-      city: {type: String, required: 'City is required'},
-      state: {type: String},
-      zipcode: {type: String, required: 'Zip Code is required'},
-      country: {type: String, required: 'Country is required'}
-    },
-    payment_id: {},
-    updated: Date,
-    created: {
-      type: Date,
-      default: Date.now
-    },
-    user: {type: mongoose.Schema.ObjectId, ref: 'User'}
-  })
+  productName: {
+    type: String,
+    required: true
+  },
+  time:{
+    type:String,
+    required:true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
   
-  const Order = mongoose.model('Order', OrderSchema)
+  description: {
+    type: String
+  },
+  
+  productGrade: {
+    type: String,
+    required: true
+  },
+ payment_id: {
+   type:String,
+   required:true
+ },
+ orderedBy:{
+   type:Schema.Types.ObjectId,
+   ref:"User"
+ }
+  
+  },{timestamps:true});
+  
+  module.exports = model('Order', orderSchema)

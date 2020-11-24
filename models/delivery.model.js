@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const deliverySchema = new Schema({
+  
   deliveryId: {
     type: Schema.Types.ObjectId,
     ref: "User",

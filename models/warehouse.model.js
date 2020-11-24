@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const warehouseSchema = new Schema({
+    
     warehouse_code: {
         type: String,
         default: "AAW-001"

@@ -2,10 +2,9 @@ const { Schema, model } = require("mongoose");
 
 const bidSchema = new Schema({
 
-    productName: {
-        type: String,
-        trim: true,
-        required: 'Product name is required'
+    product: {
+        type:Schema.Types.ObjectId,
+        ref:"Product"
     },
     initialFee: {
         type: Number,
@@ -30,17 +29,18 @@ const bidSchema = new Schema({
     },
     postedBy: {
         type: Schema.Types.ObjectId,
-        ref: 'Warehouse'
+        ref: "Warehouse"
     },
     startingBidPrice: {
         type: Number,
         default: 0
     },
 
-    bidder: {
+    bidder:{
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        ref: "User"
     },
+
     bidNo: Number,
 
 

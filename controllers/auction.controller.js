@@ -1,4 +1,5 @@
-const BidModel = require("../models/bid.model");
+const Bid = require("../models/bid.model");
+const io = require("socket.io");
 
 export default (server) => {
     const io = require('socket.io').listen(server)
@@ -17,7 +18,7 @@ export default (server) => {
 
 const bid = async (bid, auction) => {
     try {
-        let result = await BidModel.findOneAndUpdate({
+        let result = await Bid.findOneAndUpdate({
             _id: auction, $or: [{ 'bids.0.bid': { $lt: bid.bid } },
             { bids: { $eq: [] } }]
         }, {
@@ -28,8 +29,8 @@ const bid = async (bid, auction) => {
                 }
             }
         }, { new: true })
-            .populate('bids.bidder', '_id name')
-            .populate('seller', '_id name')
+            .populate('bidder', '_id fullname')
+            .populate('postedBy', '_id warehouse_code')
             .exec()
         io.to(auction)
           .emit('new bid', result)
@@ -38,3 +39,9 @@ const bid = async (bid, auction) => {
     }
 }
 }
+/*
+socket.broadcast.emit() => all client not connected
+io.emit() = all client in jeneral
+socket.emit() => for single user that is connected
+
+*/
