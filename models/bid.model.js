@@ -2,7 +2,11 @@ const { Schema, model } = require('mongoose');
 const moment = require('moment');
 
 const bidSchema = new Schema({
-  initialFee: {
+  bidNo: {
+    type: String,
+    required: true,
+  },
+  biddingFee: {
     type: Number,
     required: [true, 'You should pay the un returnable fee to bid'],
   },
@@ -11,7 +15,7 @@ const bidSchema = new Schema({
     ref: 'Product',
     required: true,
   },
-  biddingPrice: {
+  initialBiddingPrice: {
     type: Number,
     required: true,
   },
@@ -23,6 +27,20 @@ const bidSchema = new Schema({
     type: String,
     required: true,
   },
+  biddingInterval: {
+    type: Number,
+    required: false,
+  },
+  postedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'Warehouse',
+  },
+  bidders: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 module.exports = model('Bid', bidSchema);

@@ -36,7 +36,7 @@ const post_product = async (req, res) => {
       quantity,
       regionOfOrigin,
       price,
-      desciption,
+      description,
     } = req.body;
 
     let new_product = new Product({
@@ -45,7 +45,7 @@ const post_product = async (req, res) => {
       quantity,
       regionOfOrigin,
       price,
-      desciption,
+      description,
       productImage: req.file.path,
       postedBy,
     });

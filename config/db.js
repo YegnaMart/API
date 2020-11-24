@@ -1,16 +1,17 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+const chalk = require('chalk');
 
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
       useCreateIndex: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     });
 
-    console.log(`Connected to  : ${process.env.MONGO_URL}`);
+    console.log(chalk.cyan(`Connected to  : ${process.env.MONGO_URL}`));
   } catch (err) {
-    console.log(`Error: ${err.message}`.red);
+    console.log(chalk.red(`Error: ${err.message}`));
     process.exit(1);
   }
 };

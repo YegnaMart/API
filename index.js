@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const chack = require('chalk');
 
 // @configure database connection
 const connectDB = require('./config/db');
@@ -47,5 +48,9 @@ app.use('/warehouse', warehouseRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Server started in ${process.env.node_dev} mode on ${PORT}`);
+  console.log(
+    chack.bgWhite.black.bold(
+      `Server started in ${process.env.node_dev} mode on ${PORT}`
+    )
+  );
 });

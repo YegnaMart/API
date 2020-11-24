@@ -7,8 +7,8 @@ const moment = require('moment');
 
 const getBids = async (req, res) => {
   try {
-    let bids = await Bid.find();
-    return res.status(200).json(bids[1]);
+    let bids = await Bid.find().populate('product');
+    return res.status(200).json(bids);
   } catch (error) {
     console.log(error);
   }
@@ -21,18 +21,16 @@ const announceBid = async (req, res) => {
   try {
     //get product id
     let productId = req.params.productId;
-    console.log(productId);
-    let product = await Product.findById(productId);
+    let product = await Product.findOne({ _id: productId });
+
+    // get inputs from user
+    const { biddingFee, initialBiddingPrice } = req.body;
 
     // specify details about product in announcement
-    let date = new Date().getTime();
     let announcementDetail = {
-      _id: product._id,
-      productName: product.cropType,
-      region: product.region,
-      amount: product.amount,
-      grade: product.cropGrade,
-      fertilizer: product.fertilizer,
+      product: product,
+      biddingFee,
+      initialBiddingPrice,
       openingDate: moment(req.body.openingDate).format('YYYY/MM/DD'),
       closingDate: moment(req.body.closingDate).format('YYYY/MM/DD'),
     };
@@ -62,34 +60,112 @@ const announceBid = async (req, res) => {
 // @ create/open a bid
 // @ access authentic/private
 const openBid = async (req, res) => {
+  // get product Id from the parameter
   let id = req.params.productId;
+
+  //generate random number for the bid
+  let bid_no = 'BID-' + Math.ceil(Math.random() * 10000);
+
   try {
+    const {
+      startingDate,
+      biddingFee,
+      initialBiddingPrice,
+      biddingInterval,
+    } = req.body;
+
+    //check if the product already opened for bid
     let product = await Product.findById(id);
+
+    let abid = await Bid.findOne({ product: id });
+    if (abid.product != null) {
+      return res.status(400).json({
+        message: `Product ${id} is already on bid`,
+        success: false,
+      });
+    }
+
+    // check if bid number is taked
+    let bid_by_no = await Bid.findOne({ bidNo: bid_no });
+    if (bid_by_no.bidNo != null) {
+      res.status(400).json({
+        message: `bid number already taked,please send request again`,
+        success: false,
+      });
+    }
+
+    // create new bid object
     let bid = new Bid({
-      initialFee: req.body.initialFee,
+      bidNo: bid_no,
+      biddingFee,
       product: product._id,
-      biddingPrice: req.body.biddingPrice,
-      closingDate: moment(req.body.closingDate).format(
-        'MMMM Do YYYY, h:mm:ss a'
-      ),
+      initialBiddingPrice,
+      startingDate: moment(startingDate).format('Do MMMM, YYYY [at] h:mm a'),
+      closingDate: moment(startingDate)
+        .add(biddingInterval, 'hours')
+        .format('Do MMMM, YYYY [at] h:mm a'),
+      biddingInterval,
     });
 
-    bid
-      .save()
-      .then((result) => {
-        res.status(201).json({
-          success: true,
-          data: result,
-        });
-      })
-      .catch((err) => {
-        res.status(404).json(err);
-      });
+    //save new bid
+    let data = await bid.save();
+
+    //respond to the client
+    return res.status(201).json({
+      data,
+      success: true,
+    });
   } catch (error) {
-    const messages = Object.values(error.errors).map((value) => value.message);
     return res.status(500).json({
-      message: 'unable to signup',
-      error: messages,
+      message: 'unable to open a bid',
+      error,
+    });
+  }
+};
+
+// @ bid/bid_product
+// @ bidding fee should be confirmed or subtracted from bidder account
+// @ access authentic
+
+const bidProduct = async (req, res) => {
+  try {
+    const id = req.params.bidId;
+    // const { biddingFee } = req.body;
+    // let userDetails = req.user;
+    let userDetails = req.user;
+    let data = await Bid.findOneAndUpdate(
+      { _id: id },
+
+      { $push: { bidders: userDetails.user_id } },
+      { new: true, useFindAndModify: false }
+    );
+
+    return res.status(201).json({
+      data,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error,
+    });
+  }
+};
+
+// @ bid/get_a_bid
+// @ get a bid that have many bidders
+// @ access authentic
+const getBid = async (req, res) => {
+  try {
+    const bid_no = req.params.bidNo;
+    const bid = await Bid.findOne({ bidNo: bid_no }).populate('bidders');
+
+    return res.status(200).json({
+      bid,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error,
     });
   }
 };
@@ -121,4 +197,6 @@ module.exports = {
   announceBid,
   openBid,
   closeBid,
+  bidProduct,
+  getBid,
 };
