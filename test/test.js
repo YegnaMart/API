@@ -1,3 +1,4 @@
+let User = require('../models/user.model');
 let assert = require('assert');
 describe('Array', () => {
   describe('#indexOf()', () => {
