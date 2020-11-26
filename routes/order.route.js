@@ -4,16 +4,16 @@ const router = require("express").Router();
 const OrderController = require("../controllers/orderproduct.controller");
 
 router.post("/add_orders",
-OrderController.addOrders);
+    OrderController.addOrders);
 
 router.get("/get_orders",
-OrderController.getOrders);
+    OrderController.getOrders);
 
 router.get("/get_orders/:orderId",
- OrderController.getOrdersById);
+    OrderController.getOrdersById);
 
- router.delete("/delete/:orderId",
- OrderController.deleteOrders);
+router.delete("/delete/:orderId",
+    OrderController.deleteOrders);
 
 
 

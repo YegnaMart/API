@@ -4,7 +4,7 @@ const Bid = require("../models/bid.model");
 
 exports.createBid = async (req, res, next) => {
   try {
-    let bidder = req.userData._id;       
+    let bidder = req.userData.user_id;       
     let new_bid = new Bid({
       productName: req.body.productName,
       initialFee: req.body.initialFee,
@@ -33,10 +33,11 @@ exports.createBid = async (req, res, next) => {
 
 }
 
+
 exports.getBids = async (req, res, next) => {
   try {
-    let bid = await Bid.find({_id:req.parmas.id})
-      .populate("postedBy")
+    let bid = await Bid.find()
+      //.populate("bidder")
       //.populate("bidder", "fullname");
     if (!bid) {
       return res.status(400).json({
@@ -45,9 +46,8 @@ exports.getBids = async (req, res, next) => {
     }
     return res.status(200).json({
       success: true,
-      bids: bid,
+      bids: bid
     });
-    //next();
 
   } catch (err) {
     return res.status(400).json({
@@ -56,6 +56,7 @@ exports.getBids = async (req, res, next) => {
   }
 
 }
+
 
 exports.listOpenBid = async (req, res, next) => {
   try {
