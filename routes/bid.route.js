@@ -29,7 +29,7 @@ bidRouter.post('/create_bid/:productId', openBid);
  * Bid for product
  */
 
-bidRouter.get('/bid_product/:bidId', checkAuth, bidProduct);
+bidRouter.patch('/bid_product/:bidId', checkAuth, bidProduct);
 
 /**
  * get a bid with respective bidders

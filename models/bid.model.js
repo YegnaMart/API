@@ -37,8 +37,11 @@ const bidSchema = new Schema({
   },
   bidders: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      offer:Number,
+      bidder: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
     },
   ],
 });

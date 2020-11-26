@@ -133,15 +133,23 @@ const bidProduct = async (req, res) => {
     // const { biddingFee } = req.body;
     // let userDetails = req.user;
     let userDetails = req.user;
-    let data = await Bid.findOneAndUpdate(
+    await Bid.findOneAndUpdate(
       { _id: id },
 
-      { $push: { bidders: userDetails.user_id } },
+      {
+        $push: {
+          bidders: {
+            bidder: userDetails.user_id,
+            offer: req.body.offer, // modified the bid with their respective offer
+          },
+        },
+      },
       { new: true, useFindAndModify: false }
     );
 
     return res.status(201).json({
-      data,
+      message: 'Bid for product successfull',
+      success: true,
     });
   } catch (error) {
     return res.status(500).json({
@@ -156,7 +164,10 @@ const bidProduct = async (req, res) => {
 const getBid = async (req, res) => {
   try {
     const bid_no = req.params.bidNo;
-    const bid = await Bid.findOne({ bidNo: bid_no }).populate('bidders');
+    const bid = await Bid.findOne({ bidNo: bid_no }).populate(
+      'bidders.bidder',
+      '-password -__v'
+    );
 
     return res.status(200).json({
       bid,
