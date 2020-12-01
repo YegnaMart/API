@@ -39,8 +39,9 @@ const registerUser = async (userData, res) => {
     });
 
     // register user into the database
-    await newUser.save();
+    const data = await newUser.save();
     return res.status(201).json({
+      data,
       message: 'You have successfully signed up.',
       success: true,
     });
