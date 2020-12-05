@@ -19,7 +19,8 @@ export default (server) => {
 const bid = async (bid, auction) => {
     try {
         let result = await Bid.findOneAndUpdate({
-            _id: auction, $or: [{ 'bids.0.bid': { $lt: bid.bid } },
+            _id: auction,
+             $or: [{ 'bids.0.bid': { $lt: bid.bid } },
             { bids: { $eq: [] } }]
         }, {
             $push: {

@@ -1,4 +1,4 @@
-const {Schema,model, Mongoose} = require("mongoose");
+const {Schema,model} = require("mongoose");
 const userSchema = new Schema({
     fullname:{
         type:String,
@@ -20,8 +20,8 @@ const userSchema = new Schema({
         enum:["farmer","consumer","stockmanager","stockworker","deliveryagent","deliverypersonnel","admin"]
     },
     location:{
-        type:String,
-        required:true
+        Type:Schema.Types.ObjectId,
+        ref:"Location"
     },
     password:{
         type:String,

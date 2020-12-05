@@ -10,6 +10,7 @@ const orderSchema = new Schema({
     required:true
   },
   quantity: {
+    //amount
     type: Number,
     required: true
   },

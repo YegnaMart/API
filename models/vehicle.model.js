@@ -18,10 +18,7 @@ const vehicleSchema = new Schema({
         type: Number,
         required: true
     },
-    color: {
-        type: String,
-        required: true
-    }
+   
 }, { timestamps: true });
 
 module.exports = model("Vehicle", vehicleSchema);
