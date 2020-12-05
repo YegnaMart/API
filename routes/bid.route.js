@@ -4,7 +4,7 @@ const bidRouter = express.Router();
 const {
   getBids,
   announceBid,
-  openBid,
+  createBid,
   closeBid,
   bidProduct,
   getBid,
@@ -23,7 +23,7 @@ bidRouter.post('/announce_bid/:productId', announceBid);
 /**
  * open a bid
  */
-bidRouter.post('/create_bid/:productId', openBid);
+bidRouter.post('/create_bid/:productId', createBid);
 
 /**
  * Bid for product

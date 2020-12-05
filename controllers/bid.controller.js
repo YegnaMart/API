@@ -6,9 +6,23 @@ const moment = require('moment');
 // access authentic
 
 const getBids = async (req, res) => {
+  const { startingDate } = req.body;
   try {
     let bids = await Bid.find().populate('product');
-    return res.status(200).json(bids);
+
+    if (startingDate) {
+      let announcementBids = bids.filter((_bid) => {
+        if (moment(startingDate).isAfter(moment(_bid.startingDate))) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      return res.status(200).json(announcementBids);
+    } else {
+      return res.status(200).json(bids);
+    }
   } catch (error) {
     console.log(error);
   }
@@ -59,7 +73,7 @@ const announceBid = async (req, res) => {
 // @ bid/create_bid
 // @ create/open a bid
 // @ access authentic/private
-const openBid = async (req, res) => {
+const createBid = async (req, res) => {
   // get product Id from the parameter
   let id = req.params.productId;
 
@@ -106,9 +120,13 @@ const openBid = async (req, res) => {
       biddingInterval,
     });
 
-
     //save new bid
     let data = await bid.save();
+
+    if (moment(startingDate).diff(moment(), 'days') > 1) {
+      let announcement = ann;
+    }
+
     //respond to the client
     return res.status(201).json({
       data,
@@ -204,6 +222,40 @@ const closeBid = async (req, res) => {
   }
 };
 
+const checkSchedulesBids = async () => {
+  try {
+    let tobeOpened = [];
+    let bids = await Bid.find();
+
+    console.log(bids);
+    if (bids.length == 0) return;
+
+    bids.forEach((_bid) => {
+      if (moment(_bid.startingDate).isAfter(moment())) {
+        tobeOpened.push(_bid._id);
+      } else {
+        //Do nothing
+      }
+    });
+
+    if (tobeOpened != []) {
+      var bulk = People.collection.initializeOrderedBulkOp();
+      bulk
+        .find({ _id: { $in: tobeOpened } })
+        .update({ $set: { status: 'opened' } });
+      bulk.execute((err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Scheduled Bids ', toBeClosed, ' Opened Successfully');
+        }
+      });
+    }
+  } catch (err) {
+    console.log('error while opening scheduled bids ');
+  }
+};
+
 const closeBids = async () => {
   try {
     let toBeClosed = [];
@@ -241,7 +293,7 @@ const closeBids = async () => {
 module.exports = {
   getBids,
   announceBid,
-  openBid,
+  createBid,
   closeBid,
   bidProduct,
   getBid,
