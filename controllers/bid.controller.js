@@ -63,7 +63,7 @@ exports.listOpenBid = async (req, res, next) => {
     let auction = await Bid.find({ bidEnd: { $gt: new Date() } })
       .sort("bidStart")
       .populate("postedBy", "_id warehouse_code")
-      .populate("bidder", "_id fullname")
+      .populate("bidder", "_id fullname");
     res.json(auction);
 
   }

@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const Location  = require("./location.model");
 
 const deliverySchema = new Schema({
   
@@ -7,18 +8,12 @@ const deliverySchema = new Schema({
     ref: "User",
 
   },
-  quintal_per_km: {
-    type: Number,
-    required: true
-  },
 
-  pick_up_loc: {
-    type: Schema.Types.ObjectId,
-    ref: "Location"
+  pickup_location: {
+    type: Location
   },
-  drop_off_loc: {
-    type: Schema.Types.ObjectId,
-    ref: "Location"
+  dropoff_location: {
+    type: Location
 
   },
   

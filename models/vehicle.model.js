@@ -18,6 +18,10 @@ const vehicleSchema = new Schema({
         type: Number,
         required: true
     },
+    quintal_per_km: {
+        type: Number,
+        required: true
+      },
    
 }, { timestamps: true });
 

@@ -7,6 +7,7 @@ const userRoute = require("./routes/user.route");
 const productRoute = require("./routes/product.route");
 const bidRoute = require("./routes/bid.route");
 const orederRoute = require("./routes/order.route");
+const deliveryRoute = require("./routes/delivery.route");
 const connectDB = require("./config/db");
 const bodyParser = require("body-parser");
 const app = express();
@@ -32,6 +33,7 @@ app.use("/api/users",userRoute);
 app.use("/api/products",productRoute);
 app.use("/api/bids",bidRoute);
 app.use("/api/orders",orederRoute);
+app.use("api/delivery",deliveryRoute);
 
 
 

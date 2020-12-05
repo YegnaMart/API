@@ -6,30 +6,26 @@ const moment = require("moment");
 
 exports.addDelivery = async (req, res, next) => {
     try {
-        const orderedBy= req.user_id;
-        const delivery = new Delivery({
-            quintal_per_km: req.body.quintal_per_km,
-            quantity: req.body.quantity,
-            time: moment(req.body.time).format(
-                'MMMM Do YYYY, h:mm:ss a'),
-            description: req.body.description,
-            productGrade: req.body.productGrade,
-            payment_id: req.body.payment_id,
-            orderedBy
+        const deliveryId= req.params.deliveryId;
+        const newDelivery = new Delivery({
+            deliveryId,
+            pickup_location:req.body.pickup_location,
+            dropoff_location:req.body.dropoff_location
+            
+            });
 
-        });
-
-    let orders = await order.save();
+    let delivery = await newDelivery.save();
         return res.status(200).json({
-            message: "Order is success fully added",
-            orders
+            delivery:delivery,
+            message: "Delivery is requested successfully"
+            
         });
 
 
     }
     catch (err) {
         res.status(500).json({
-            error: "orders is not added try again",
+            error: "Request in not sent please try again",
 
         });
 
