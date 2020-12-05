@@ -17,6 +17,7 @@ const feedbackRouter = require('./routes/feedback.route');
 const vehicleRouter = require('./routes/vehicle.route');
 const warehouseRouter = require('./routes/warehouse.route');
 const deliveryRouter = require('./routes/delivery.route');
+const bankRouter = require('./routes/bank.route')
 // create instance of the app
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/feedback', feedbackRouter);
 app.use('/delivery', deliveryRouter);
 app.use('/vehicle', vehicleRouter);
 app.use('/warehouse', warehouseRouter);
+app.use('/bank',bankRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
