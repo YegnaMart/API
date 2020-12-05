@@ -35,9 +35,14 @@ const bidSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Warehouse',
   },
+  status: {
+    type: String,
+    enum: ['opened', 'closed', 'scheduled', 'inactive'],
+    default: 'inactive',
+  },
   bidders: [
     {
-      offer:Number,
+      offer: Number,
       bidder: {
         type: Schema.Types.ObjectId,
         ref: 'User',

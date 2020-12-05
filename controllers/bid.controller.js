@@ -75,10 +75,11 @@ const openBid = async (req, res) => {
     } = req.body;
 
     //check if the product already opened for bid
-    let product = await Product.findById(id);
+    // let product = await Product.findOne({ _id: id });
 
-    let abid = await Bid.findOne({ product: id });
-    if (abid.product != null) {
+    let abid = await Bid.findOne({ product: id }).populate('product');
+
+    if (abid != null) {
       return res.status(400).json({
         message: `Product ${id} is already on bid`,
         success: false,
@@ -87,7 +88,7 @@ const openBid = async (req, res) => {
 
     // check if bid number is taked
     let bid_by_no = await Bid.findOne({ bidNo: bid_no });
-    if (bid_by_no.bidNo != null) {
+    if (bid_by_no != null) {
       res.status(400).json({
         message: `bid number already taked,please send request again`,
         success: false,
@@ -98,27 +99,25 @@ const openBid = async (req, res) => {
     let bid = new Bid({
       bidNo: bid_no,
       biddingFee,
-      product: product._id,
+      product: id,
       initialBiddingPrice,
-      startingDate: moment(startingDate).format('Do MMMM, YYYY [at] h:mm a'),
-      closingDate: moment(startingDate)
-        .add(biddingInterval, 'hours')
-        .format('Do MMMM, YYYY [at] h:mm a'),
+      startingDate: moment(startingDate).valueOf(),
+      closingDate: moment(startingDate).add(biddingInterval, 'hours').valueOf(),
       biddingInterval,
     });
 
+
     //save new bid
     let data = await bid.save();
-
     //respond to the client
     return res.status(201).json({
       data,
       success: true,
     });
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({
-      message: 'unable to open a bid',
-      error,
+      message: 'unable to create a bid',
+      err,
     });
   }
 };
@@ -205,6 +204,40 @@ const closeBid = async (req, res) => {
   }
 };
 
+const closeBids = async () => {
+  try {
+    let toBeClosed = [];
+    let bids = await Bid.find();
+
+    console.log(bids);
+    if (bids.length == 0) return;
+
+    bids.forEach((_bid) => {
+      if (moment(_bid.closingDate).isBefore(moment())) {
+        toBeClosed.push(_bid._id);
+      } else {
+        //Do nothing
+      }
+    });
+
+    if (toBeClosed != []) {
+      var bulk = People.collection.initializeOrderedBulkOp();
+      bulk
+        .find({ _id: { $in: toBeClosed } })
+        .update({ $set: { status: 'closed' } });
+      bulk.execute((err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(' Bids ', toBeClosed, ' Closed Successfully');
+        }
+      });
+    }
+  } catch (err) {
+    console.log('error while closing bids ');
+  }
+};
+
 module.exports = {
   getBids,
   announceBid,
@@ -212,4 +245,5 @@ module.exports = {
   closeBid,
   bidProduct,
   getBid,
+  closeBids,
 };
