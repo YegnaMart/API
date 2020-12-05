@@ -1,15 +1,13 @@
 const { Schema, model } = require('mongoose');
 
 exports.locationSchema = new Schema({
-  name: {
-    type: String,
+  lat: {
+    type: Number,
+  },
+  long: {
+    type: Number,
   },
   placeName: {
     type: String,
-    required: true,
-  },
-  coordinates: {
-    type: [Number],
-    required: true,
   },
 });

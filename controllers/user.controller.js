@@ -14,7 +14,7 @@ const registerUser = async (userData, res) => {
     let phoneNoTaken = await validatePhoneNumber(userData.phoneNo);
     if (phoneNoTaken) {
       return res.status(400).json({
-        message: 'Phone Number Already Used.',
+        message: 'Phone Number Already Used, try another.',
         success: false,
       });
     }
@@ -151,7 +151,9 @@ const resetPassword = (req, res) => {
  * @ update user detail
  */
 
-let updateUserDetails = async (req, res) => {};
+let updateUserDetails = async (req, res) => {
+  
+};
 
 /**
  *

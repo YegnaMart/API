@@ -169,8 +169,10 @@ const getBid = async (req, res) => {
       '-password -__v'
     );
 
+    let sortOffer = bid.bidders.sort((a, b) => b.offer - a.offer);
+
     return res.status(200).json({
-      bid,
+      bid: sortOffer,
       success: true,
     });
   } catch (error) {

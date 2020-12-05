@@ -18,11 +18,7 @@ const vehicleSchema = new Schema(
     plateNo: {
       type: String,
       required: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
+    }
   },
   {
     timestamps: true,

@@ -2,9 +2,7 @@ const Delivery = require('../models/delivery.model');
 
 const availableDelivery = async (req, res) => {
   try {
-    let delivers = await Delivery.find().populate(
-      'deliveryId pickup_Location dropoff_Location'
-    );
+    let delivers = await Delivery.find().populate('deliveryId');
 
     return res.status(200).json({
       delivers,
