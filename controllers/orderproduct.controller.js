@@ -6,7 +6,7 @@ const moment = require("moment");
 
 exports.addOrders = async (req, res, next) => {
     try {
-        const orderedBy= req.user_id;
+        const orderedBy = req.user_id;
         const order = new Order({
             productName: req.body.productName,
             quantity: req.body.quantity,
@@ -110,18 +110,7 @@ exports.deleteOrders = async (req, res, next) => {
  
 //router.patch("/:productId",
 exports.editOrder = async(req,res,next)=>{
-    /*constructing a dynamic query
-    const objKey= Object.keys(req.body);//Object.keys(obj) returns array of keys
-    const updates ={};
-    for (let i = 0; i < entries.length; i++) {
-     updates[objKey[i]] = Object.values(req.body)[i]//Object.values(object) returns values
-   }
-   User.update({
-    "username": req.params.user
-    } , {
-    $set: updates
-   }
-    */
+
     const id = req.params.productId;
     const keys = Object.keys(req.boody);
     const updates = {};

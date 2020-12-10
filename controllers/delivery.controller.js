@@ -6,7 +6,7 @@ const moment = require("moment");
 
 exports.addDelivery = async (req, res, next) => {
     try {
-        const deliveryId= req.params.deliveryId;
+        const deliveryId = req.params.deliveryId;
         const newDelivery = new Delivery({
             deliveryId,
             pickup_location:req.body.pickup_location,

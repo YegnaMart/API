@@ -40,10 +40,16 @@ const bidSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+    state:{
+        type:String,
+        default:"closed",
+        enum:["open","closed","scheduled"]
 
+    },
     bidNo: Number,
 
 
-}, { timestamps: true })
+}
+, { timestamps: true })
 
 module.exports = model('Bid', bidSchema)
