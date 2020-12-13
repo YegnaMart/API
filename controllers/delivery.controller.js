@@ -33,19 +33,18 @@ exports.addDelivery = async (req, res, next) => {
 }
 
 //router.get("/",(req,res,next
-exports.getOrders = async (req, res, next) => {
+exports.getDelivery = async (req, res, next) => {
     try {
-        let orders = await Order.find()
-        .populate("orderedBy")
+        let delivery = await Delivery.find();
 
-        if (!orders) {
+        if (!delivery) {
             return res.status(400).json({
                 error: "Order not  found"
             });
         }
         return res.status(200).json({
             success: true,
-            order: orders
+            order: delivery
         });
     } catch (err) {
         return res.status(400).json({
@@ -61,23 +60,21 @@ exports.getOrders = async (req, res, next) => {
 exports.getOrdersById = async (req, res, next) => {
 
     try {
-        let order = await Order.findById(req.params.orderId)
-            .populate("Product")
-            .exec()
+        let delivery = await Delivery.findById(req.params.orderId);
 
-        if (!order) {
+        if (!delivery) {
             return res.status(404).json({
-                message: "Order not found"
+                message: "Delivery not found"
             });
         }
         res.status(200).json({
-            order: order
+            delivery: Delivery
         });
 
 
     } catch (err) {
         return res.status(500).json({
-            error: "Can't get an order"
+            error: "Can't get an Delivery"
         });
 
 
@@ -86,12 +83,12 @@ exports.getOrdersById = async (req, res, next) => {
 
 //router.delete("/:orderId", (req, res, next)
 
-exports.deleteOrders = async (req, res, next) => {
+exports.deleteDelivery = async (req, res, next) => {
     try {
-        let deltedOrder = await Order.remove({ _id: req.params.orderId });
+        let deltedDelivery = await Delivery.remove({ _id: req.params.orderId });
         res.status(200).json({
-            message: "Order deleted",
-            result: deltedOrder
+            message: "Delivery deleted",
+            result: deltedDelivery
         });
 
     }
@@ -105,26 +102,14 @@ exports.deleteOrders = async (req, res, next) => {
 }
  
 //router.patch("/:productId",
-exports.editOrder = async(req,res,next)=>{
-    /*constructing a dynamic query
-    const objKey= Object.keys(req.body);//Object.keys(obj) returns array of keys
-    const updates ={};
-    for (let i = 0; i < entries.length; i++) {
-     updates[objKey[i]] = Object.values(req.body)[i]//Object.values(object) returns values
-   }
-   User.update({
-    "username": req.params.user
-    } , {
-    $set: updates
-   }
-    */
-    const id = req.params.productId;
-    const keys = Object.keys(req.boody);
+exports.editDelivery = async(req,res,next)=>{
+   const id = req.params.productId;
+    const keys = Object.keys(req.body);
     const updates = {};
     for(const ops of keys){
         updates[keys[ops]] = Object.values(req.body)[ops];
     }
-    Product.update({_id:id},{$set:updates})
+    Delivery.update({_id:id},{$set:updates})
     .exec()
     .then(result=>{
         console.log(result);

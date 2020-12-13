@@ -10,14 +10,8 @@ const bidSchema = new Schema({
         type: Number,
         required: true
     },
-    description: {
-        type: String,
-        trim: true
-    },
-    image: {
-        type: String,
-        required: false
-    },
+   
+   
 
     bidStart: {
         type: String,
@@ -42,8 +36,8 @@ const bidSchema = new Schema({
     },
     state:{
         type:String,
-        default:"closed",
-        enum:["open","closed","scheduled"]
+        default:"inactive",
+        enum:["open","closed","scheduled","inactive"]
 
     },
     bidNo: Number,
