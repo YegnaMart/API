@@ -17,6 +17,14 @@ const deliverySchema = new Schema(
       type: Number,
       required: true,
     },
+    rate: {
+      type: Number,
+      default: 1,
+      enum: [1, 2, 3, 4, 5],
+    },
+    comment: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

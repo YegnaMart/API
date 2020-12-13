@@ -1,9 +1,12 @@
 const { Schema, model } = require('mongoose');
 const orderSchema = new Schema({
-  product: {
-    type: Schema.Types.ObjectId,
-    ref: 'Product',
-    required: [true, 'the Product to be order should be specified'],
+  productName: {
+    type: String,
+    required: true
+  },
+  amount: {
+    type: String,
+    required: true
   },
   description: {
     type: String,
@@ -13,6 +16,7 @@ const orderSchema = new Schema({
   date: {
     type: Date,
     default: Date.now,
+    required: true,
   },
 });
 

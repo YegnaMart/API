@@ -9,7 +9,7 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  quantity: {
+  amount: {
     type: Number,
     required: true,
   },

@@ -24,7 +24,9 @@ const getBids = async (req, res) => {
 
       return res.status(200).json(announcementBids);
     } else {
-      return res.status(200).json(bids);
+      return res
+        .status(200)
+        .json({ data: bids, message: 'bid found', success: true });
     }
   } catch (error) {
     console.log(error);
@@ -151,7 +153,7 @@ const createBid = async (req, res) => {
 
 const bidProduct = async (req, res) => {
   try {
-    const {id, offer} = req.body;
+    const { id, offer } = req.body;
     // const { biddingFee } = req.body;
     // let userDetails = req.user;
     let userDetails = req.user;
@@ -161,14 +163,14 @@ const bidProduct = async (req, res) => {
         $push: {
           bidders: {
             bidder: userDetails.user_id,
-            offer: req.body.offer, // modified the bid with their respective offer
+            offer: offer, // modified the bid with their respective offer
           },
         },
       },
       { new: true, useFindAndModify: false }
     );
-    console.log(response);
     return res.status(201).json({
+      data: response,
       message: 'Bid for product successfull',
       success: true,
     });

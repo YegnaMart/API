@@ -21,13 +21,14 @@ const add_delivery = async (req, res) => {
   try {
     const delivery_id = req.params.deliveryId;
 
-    let { pickup_location, dropoff_location, quintal_per_km } = req.body;
+    let { pickup_location, dropoff_location, quintal_per_km, rate } = req.body;
 
     let new_delivery = new Delivery({
       delivery_id,
       pickup_location,
       dropoff_location,
       quintal_per_km,
+      rate,
     });
 
     await new_delivery.save();
@@ -72,8 +73,42 @@ const edit_delivery_detail = async (req, res) => {
   }
 };
 
+const rateDelivery = async (req, res) => {
+  try {
+    const { rate, comment } = req.body;
+
+    let UserDetail = req.user;
+
+    let response = await Delivery.findOneAndUpdate(
+      {
+        deliveryId: UserDetail.deliveryId,
+      },
+      {
+        rate,
+        comment,
+      },
+      {
+        new: true,
+        useFindAndModify: false,
+      }
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Thank You for rating us.',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'sorry for the inconvinience',
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   availableDelivery,
   add_delivery,
   edit_delivery_detail,
+  rateDelivery,
 };

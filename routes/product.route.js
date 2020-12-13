@@ -45,7 +45,7 @@ const upload = multer({
 
 productRouter.route('/get_products').get(get_products);
 productRouter
-  .route('/post_product/')
+  .route('/post_product')
   .post(upload.single('productImage'), checkAuth, post_product);
 productRouter.route('/edit_product/:product_id').post(
   upload.single('productImage'),checkAuth,

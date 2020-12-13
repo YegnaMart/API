@@ -28,21 +28,22 @@ const get_products = async (req, res) => {
 // @ post product
 // access authentic/must login to their account
 const post_product = async (req, res) => {
-  let postedBy = req.user.user_id;
   try {
     const {
+      postedBy,
       productName,
       category,
-      quantity,
+      amount,
       regionOfOrigin,
       price,
       description,
     } = req.body;
 
     let new_product = new Product({
+      postedBy,
       productName,
       category,
-      quantity,
+      amount,
       regionOfOrigin,
       price,
       description,
@@ -52,8 +53,9 @@ const post_product = async (req, res) => {
 
     const product = await new_product.save();
     return res.status(201).json({
-      sucess: true,
       data: product,
+      sucess: true,
+      message: `New Product Inserted`,
     });
   } catch (error) {
     const messages = Object.values(error.errors).map((value) => value.message);
@@ -72,10 +74,10 @@ const edit_product = async (req, res) => {
   try {
     const id = req.params.product_id;
     console.log(id);
-    const { quantity, price, desciption } = req.body;
+    const { amount, price, desciption } = req.body;
     await Product.findByIdAndUpdate(id, {
       $set: {
-        quantity: quantity,
+        amount: amount,
         price: price,
         desciption: desciption,
       },
