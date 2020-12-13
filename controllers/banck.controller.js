@@ -2,7 +2,7 @@ const Bank = require('../models/bankAccount.model');
 const Transaction = require('../models/transaction.model');
 const Bid = require('../models/bid.model');
 
-const addBankAccount = async (req, res) => {
+exports.addBankAccount = async (req, res) => {
   const { userId } = req.body;
 
   try {
@@ -37,7 +37,7 @@ function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const doTransaction = async (req, res) => {
+exports.doTransaction = async (req, res) => {
   const {
     creditedAccountUserId,
     debitedAccountUserId,
@@ -126,7 +126,7 @@ const doTransaction = async (req, res) => {
   }
 };
 
-const getAccount = async (req, res) => {
+exports.getAccount = async (req, res) => {
   const { accountNo } = req.body;
 
   try {
@@ -143,9 +143,4 @@ const getAccount = async (req, res) => {
       message: 'Unable to Query account',
     });
   }
-};
-module.exports = {
-  addBankAccount,
-  doTransaction,
-  getAccount,
 };
