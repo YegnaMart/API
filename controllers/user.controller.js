@@ -8,6 +8,46 @@ let client = require('twilio')(config.accountSID, config.authToken);
 // @ create the account for  users
 // access Public
 
+const loginRegister = async (userData, res) => {
+  const { phoneNo, firebaseUid } = userData;
+
+  if (firebaseUid) {
+    userData.password = firebaseUid;
+  }
+  let userByPhone = await User.findOne({ phoneNo: phoneNo });
+  let userByUid = await User.findOne({ firebaseUid: firebaseUid });
+
+  if (!userByPhone && !userByUid) {
+    registerUser(userData, res);
+  } else {
+    logUser(userData, res, firebaseUid);
+  }
+};
+
+let addUserDetail = async (userData, res) => {
+  let data = await User.findOneAndUpdate(
+    { phoneNo: userData.phoneNo },
+    {
+      fullName: userData.fullName,
+      role: userData.role,
+      placeName: userData.placeName,
+    },
+    { new: true, useFindAndModify: false }
+  );
+
+  if (!data) {
+    res.status(500).json({
+      success: false,
+      message: `unable to create user`,
+    });
+  } else {
+    res.status(201).json({
+      data: data,
+      success: true,
+    });
+  }
+};
+
 const registerUser = async (userData, res) => {
   try {
     //check if phone number already exists
@@ -15,15 +55,6 @@ const registerUser = async (userData, res) => {
     if (phoneNoTaken) {
       return res.status(400).json({
         message: 'Phone Number Already Used, try another.',
-        success: false,
-      });
-    }
-
-    // check if email is taken
-    let emailTaken = await validateEmail(userData.email);
-    if (emailTaken) {
-      return res.status(400).json({
-        message: 'Email Already Used.',
         success: false,
       });
     }
@@ -57,20 +88,24 @@ const registerUser = async (userData, res) => {
 // @user/login
 // @ create the account for  users
 // access Public
-const logUser = async (userData, res) => {
+const logUser = async (userData, res, firebaseUid = false) => {
   let { phoneNo, password } = userData;
   /**
    * check if any user is registered with phoneNo.
    */
-  let user = await User.findOne({ phoneNo }).populate('location');
+  let user = await User.findOne({ phoneNo: phoneNo });
+  console.log(user);
   if (!user) {
     return res.status(404).json({
-      message: 'PhoneNo no found, invalid login credentials',
+      message: 'PhoneNo noT found, invalid login credentials',
       success: false,
     });
   }
+
+  let passwordMatched;
   // check if the entered password is valid
-  let passwordMatched = await bcrypt.compare(password, user.password);
+  passwordMatched = await bcrypt.compare(password, user.password);
+
   if (passwordMatched) {
     let token = jwt.sign(
       {
@@ -94,8 +129,10 @@ const logUser = async (userData, res) => {
       expiresIn: 24,
     };
 
+    console.log(result);
+
     return res.status(200).json({
-      ...result,
+      data: result,
       message: 'You are Logged in',
       success: true,
     });
@@ -151,9 +188,7 @@ const resetPassword = (req, res) => {
  * @ update user detail
  */
 
-let updateUserDetails = async (req, res) => {
-  
-};
+let updateUserDetails = async (req, res) => {};
 
 /**
  *
@@ -240,4 +275,6 @@ module.exports = {
   getVerificationCode,
   verifyCode,
   resetPassword,
+  loginRegister,
+  addUserDetail,
 };

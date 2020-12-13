@@ -3,21 +3,20 @@ const locationSchema = require('./location.model')
 const userSchema = new Schema({
   fullName: {
     type: String,
-    required: true,
+  },
+  firebaseUid: {
+    type: String,
   },
   phoneNo: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
-    required: true,
     unique: true,
     match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
   },
   password: {
     type: String,
-    required: true,
   },
   role: {
     type: String,
@@ -33,7 +32,7 @@ const userSchema = new Schema({
     ],
   },
   location: {
-    type: locationSchema
+    type: locationSchema,
   },
 });
 

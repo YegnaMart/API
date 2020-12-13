@@ -22,7 +22,7 @@ const bankRouter = require('./routes/bank.route');
 
 // call for close
 const {
-  closeBids,
+  // closeBids,
   checkSchedulesBids,
 } = require('./controllers/bid.controller');
 // create instance of the app
@@ -66,6 +66,6 @@ app.listen(PORT, () => {
 
 nodecron.schedule('* * * * *', () => {
   console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
-  closeBids();
-  checkSchedulesBids();
+  // closeBids();
+  // checkSchedulesBids();
 });

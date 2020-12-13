@@ -8,7 +8,10 @@ const moment = require('moment');
 const getBids = async (req, res) => {
   const { startingDate } = req.body;
   try {
-    let bids = await Bid.find().populate('product');
+    let bids = await Bid.find()
+      .populate('product')
+      .populate('postedBy', 'placeName')
+      .populate('bidders.bidder', 'fullName');
 
     if (startingDate) {
       let announcementBids = bids.filter((_bid) => {
@@ -74,9 +77,6 @@ const announceBid = async (req, res) => {
 // @ create/open a bid
 // @ access authentic/private
 const createBid = async (req, res) => {
-  // get product Id from the parameter
-  let id = req.params.productId;
-
   //generate random number for the bid
   let bid_no = 'BID-' + Math.ceil(Math.random() * 10000);
 
@@ -86,16 +86,18 @@ const createBid = async (req, res) => {
       biddingFee,
       initialBiddingPrice,
       biddingInterval,
+      product,
+      postedBy,
     } = req.body;
 
     //check if the product already opened for bid
     // let product = await Product.findOne({ _id: id });
 
-    let abid = await Bid.findOne({ product: id }).populate('product');
+    let abid = await Bid.findOne({ product: product }).populate('product');
 
     if (abid != null) {
       return res.status(400).json({
-        message: `Product ${id} is already on bid`,
+        message: `Product ${product} is already on bid`,
         success: false,
       });
     }
@@ -113,19 +115,21 @@ const createBid = async (req, res) => {
     let bid = new Bid({
       bidNo: bid_no,
       biddingFee,
-      product: id,
       initialBiddingPrice,
       startingDate: moment(startingDate).valueOf(),
       closingDate: moment(startingDate).add(biddingInterval, 'hours').valueOf(),
       biddingInterval,
+      product,
+      postedBy,
     });
 
+    console.log(bid);
     //save new bid
     let data = await bid.save();
 
-    if (moment(startingDate).diff(moment(), 'days') > 1) {
-      let announcement = ann;
-    }
+    // if (moment(startingDate).diff(moment(), 'days') > 1) {
+    //   let announcement = ann;
+    // }
 
     //respond to the client
     return res.status(201).json({
@@ -133,9 +137,10 @@ const createBid = async (req, res) => {
       success: true,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       message: 'unable to create a bid',
-      err,
+      error: err,
     });
   }
 };
@@ -146,13 +151,12 @@ const createBid = async (req, res) => {
 
 const bidProduct = async (req, res) => {
   try {
-    const id = req.params.bidId;
+    const {id, offer} = req.body;
     // const { biddingFee } = req.body;
     // let userDetails = req.user;
     let userDetails = req.user;
-    await Bid.findOneAndUpdate(
+    let response = await Bid.findOneAndUpdate(
       { _id: id },
-
       {
         $push: {
           bidders: {
@@ -163,7 +167,7 @@ const bidProduct = async (req, res) => {
       },
       { new: true, useFindAndModify: false }
     );
-
+    console.log(response);
     return res.status(201).json({
       message: 'Bid for product successfull',
       success: true,
@@ -180,7 +184,7 @@ const bidProduct = async (req, res) => {
 // @ access authentic
 const getBid = async (req, res) => {
   try {
-    const bid_no = req.params.bidNo;
+    const { bid_no } = req.body;
     const bid = await Bid.findOne({ bidNo: bid_no }).populate(
       'bidders.bidder',
       '-password -__v'
@@ -189,7 +193,8 @@ const getBid = async (req, res) => {
     let sortOffer = bid.bidders.sort((a, b) => b.offer - a.offer);
 
     return res.status(200).json({
-      bid: sortOffer,
+      data: sortOffer,
+      message: `bid with number ${bid_no}`,
       success: true,
     });
   } catch (error) {

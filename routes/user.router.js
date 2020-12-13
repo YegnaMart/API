@@ -9,6 +9,8 @@ const {
   getVerificationCode,
   verifyCode,
   resetPassword,
+  loginRegister,
+  addUserDetail,
 } = require('../controllers/user.controller');
 const { checkAuth } = require('../middleware/check-auth');
 // @user/register_consumer
@@ -18,6 +20,20 @@ userRouter.post('/register', async (req, res) => {
   await registerUser(req.body, res);
 });
 
+// @user/register_consumer
+// @ create the account for  users
+// access Public
+userRouter.post('/addUserDetail', async (req, res) => {
+  await addUserDetail(req.body, res);
+});
+
+// @user/loginRegister
+// @ create the account for  users
+// access Public
+
+userRouter.post('/loginRegister', async (req, res) => {
+  await loginRegister(req.body, res);
+});
 // @user/log_consumer
 // @ create the account for  users
 // access Public

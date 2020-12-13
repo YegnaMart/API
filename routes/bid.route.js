@@ -23,7 +23,7 @@ bidRouter.post('/announce_bid/:productId', announceBid);
 /**
  * open a bid
  */
-bidRouter.post('/create_bid/:productId', createBid);
+bidRouter.post('/create_bid', createBid);
 
 /**
  * Bid for product
@@ -35,7 +35,7 @@ bidRouter.patch('/bid_product/:bidId', checkAuth, bidProduct);
  * get a bid with respective bidders
  */
 
-bidRouter.get('/get_a_bid/:bidNo', getBid);
+bidRouter.get('/get_a_bid', getBid);
 
 /**
  * closed the bid which have a winner
