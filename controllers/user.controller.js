@@ -71,6 +71,7 @@ const registerUser = async (userData, res) => {
 
     // register user into the database
     const data = await newUser.save();
+    console.log(data);
 
     let token = jwt.sign(
       {

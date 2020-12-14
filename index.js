@@ -65,7 +65,11 @@ app.listen(PORT, () => {
 });
 
 nodecron.schedule('* * * * *', () => {
-  console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
+  // console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
   // closeBids();
   // checkSchedulesBids();
 });
+
+module.exports = {
+  app,
+};
