@@ -1,4 +1,5 @@
 const Delivery = require('../models/delivery.model');
+const User = require('../models/user.model');
 
 const availableDelivery = async (req, res) => {
   try {
@@ -19,19 +20,31 @@ const availableDelivery = async (req, res) => {
 
 const add_delivery = async (req, res) => {
   try {
-    const delivery_id = req.params.deliveryId;
+    // {{userId}}
 
+    const user_id = req.user.user_id;
     let { pickup_location, dropoff_location, quintal_per_km, rate } = req.body;
 
     let new_delivery = new Delivery({
-      delivery_id,
-      pickup_location,
-      dropoff_location,
+      deliveryId: user_id,
+      pickup_Location: pickup_location,
+      dropoff_Location: dropoff_location,
       quintal_per_km,
       rate,
     });
 
-    await new_delivery.save();
+    let data = await new_delivery.save();
+    await User.findOneAndUpdate(
+      { _id: user_id },
+      {
+        $push: {
+          deliveryHistory: {
+            delivery: data._id,
+          },
+        },
+      },
+      { new: true, useFindAndModify: false }
+    );
     return res.status(201).json({
       message: 'delivery successfully saved',
       success: true,
@@ -105,6 +118,8 @@ const rateDelivery = async (req, res) => {
     });
   }
 };
+
+const deliveryHistory = async (req, res) => {};
 
 module.exports = {
   availableDelivery,

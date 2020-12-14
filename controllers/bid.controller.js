@@ -39,11 +39,11 @@ const getBids = async (req, res) => {
 const announceBid = async (req, res) => {
   try {
     //get product id
-    let productId = req.params.productId;
+    const { productId, biddingFee, initialBiddingPrice } = req.body;
+
     let product = await Product.findOne({ _id: productId });
 
     // get inputs from user
-    const { biddingFee, initialBiddingPrice } = req.body;
 
     // specify details about product in announcement
     let announcementDetail = {
@@ -186,23 +186,26 @@ const bidProduct = async (req, res) => {
 // @ access authentic
 const getBid = async (req, res) => {
   try {
-    const { bid_no } = req.body;
-    const bid = await Bid.findOne({ bidNo: bid_no }).populate(
-      'bidders.bidder',
-      '-password -__v'
-    );
+    const { bidNo } = req.body;
+    console.log(bidNo);
+    let bid = await Bid.findOne({ bidNo: bidNo })
+      .populate('product')
+      .populate('postedBy', 'placeName')
+      .populate('bidders.bidder');
+    // const bid = await Bid.findOne({ bidNo: bidNo }).populate('bidders.bidder', 'fullName phoneNo');
 
+    console.log(bid);
     let sortOffer = bid.bidders.sort((a, b) => b.offer - a.offer);
 
     return res.status(200).json({
       data: sortOffer,
-      message: `bid with number ${bid_no}`,
+      message: `bid with number ${bidNo}`,
       success: true,
     });
-  } catch (error) {
+  } catch (err) {
     return res.status(500).json({
       success: false,
-      error,
+      error: err,
     });
   }
 };

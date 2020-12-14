@@ -24,6 +24,28 @@ const get_products = async (req, res) => {
   }
 };
 
+/**
+ *
+ * @param {get Product using Category} req
+ * @param {Wheat Barley Continueing} res
+ */
+
+const getProductByCategory = async (req, res) => {
+  try {
+    const { productName } = req.body;
+    let response = await Product.find({ productName: productName });
+    res.status(200).json({
+      data: response,
+      success: true,
+      message: 'product found',
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: `unable to find product ${productName}`,
+    });
+  }
+};
 // @product/post_product
 // @ post product
 // access authentic/must login to their account
@@ -130,4 +152,5 @@ module.exports = {
   post_product,
   edit_product,
   delete_product,
+  getProductByCategory,
 };

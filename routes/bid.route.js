@@ -19,7 +19,7 @@ bidRouter.get('/get_bids', getBids);
 /**
  * announce bid
  */
-bidRouter.post('/announce_bid/:productId', announceBid);
+bidRouter.post('/announce_bid', announceBid);
 /**
  * open a bid
  */

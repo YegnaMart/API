@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const locationSchema = require('./location.model')
+const locationSchema = require('./location.model');
 const userSchema = new Schema({
   fullName: {
     type: String,
@@ -34,6 +34,14 @@ const userSchema = new Schema({
   location: {
     type: locationSchema,
   },
+  deliveryHistory: [
+    {
+      delivery: {
+        type: Schema.Types.ObjectId,
+        ref: 'Delivery',
+      },
+    },
+  ],
 });
 
 module.exports = model('User', userSchema);

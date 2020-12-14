@@ -7,7 +7,7 @@ const productSchema = new Schema({
   },
   category: {
     type: String,
-    required: true,
+    required: false,
   },
   amount: {
     type: Number,
@@ -15,7 +15,7 @@ const productSchema = new Schema({
   },
   regionOfOrigin: {
     type: String,
-    required: true,
+    required: false,
   },
   price: {
     type: Number,
@@ -26,7 +26,7 @@ const productSchema = new Schema({
   },
   productImage: {
     type: String,
-    required: true,
+    required: false,
   },
 
   postedBy: {

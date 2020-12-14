@@ -71,8 +71,24 @@ const registerUser = async (userData, res) => {
 
     // register user into the database
     const data = await newUser.save();
+
+    let token = jwt.sign(
+      {
+        user_id: data._id,
+        name: data.fullName,
+        role: data.role,
+        email: data.email,
+        phoneNo: data.phoneNo,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
     return res.status(201).json({
-      data,
+      data: {
+        _id: data._id,
+        token: token,
+      },
       message: 'You have successfully signed up.',
       success: true,
     });
@@ -94,53 +110,53 @@ const logUser = async (userData, res, firebaseUid = false) => {
    * check if any user is registered with phoneNo.
    */
   let user = await User.findOne({ phoneNo: phoneNo });
-  console.log(user);
   if (!user) {
     return res.status(404).json({
       message: 'PhoneNo noT found, invalid login credentials',
       success: false,
     });
-  }
+  } else {
+    let passwordMatched;
+    // check if the entered password is valid
+    passwordMatched = await bcrypt.compare(password, user.password);
 
-  let passwordMatched;
-  // check if the entered password is valid
-  passwordMatched = await bcrypt.compare(password, user.password);
+    if (passwordMatched) {
+      let token = jwt.sign(
+        {
+          user_id: user._id,
+          name: user.fullName,
+          role: user.role,
+          email: user.email,
+          phoneNo: user.phoneNo,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
 
-  if (passwordMatched) {
-    let token = jwt.sign(
-      {
-        user_id: user._id,
-        name: user.fullName,
-        role: user.role,
+      // check the result
+      let result = {
+        _id: user._id,
+        fullName: user.fullName,
         email: user.email,
         phoneNo: user.phoneNo,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+        role: user.role,
+        token: `Bearer ${token}`,
+        expiresIn: 24,
+      };
 
-    // check the result
-    let result = {
-      fullName: user.fullName,
-      email: user.email,
-      phoneNo: user.phoneNo,
-      role: user.role,
-      token: `Bearer ${token}`,
-      expiresIn: 24,
-    };
+      console.log(result);
 
-    console.log(result);
-
-    return res.status(200).json({
-      data: result,
-      message: 'You are Logged in',
-      success: true,
-    });
-  } else {
-    return res.status(403).json({
-      message: 'incorrect password',
-      success: false,
-    });
+      return res.status(200).json({
+        data: result,
+        message: 'You are Logged in',
+        success: true,
+      });
+    } else {
+      return res.status(403).json({
+        message: 'incorrect password',
+        success: false,
+      });
+    }
   }
 };
 
@@ -149,7 +165,7 @@ const logUser = async (userData, res, firebaseUid = false) => {
  * @ Reset Password {*} with  phoneNo by aid of OTP
  */
 
-const resetPassword = (req, res) => {
+const resetPasswordUsingPhone = (req, res) => {
   try {
     let phone = req.params.phoneNo;
     User.findOne({ phoneNo: phone })
@@ -227,6 +243,16 @@ let verifyCode = async (userInput) => {
   }
 };
 
+const deliveryHistory = async (req, res) => {
+  const id = req.user.user_id;
+  console.log(id);
+  let response = await User.findOne({ _id: id }).populate(
+    'deliveryHistory.delivery'
+  );
+  console.log(response.deliveryHistory);
+  res.status(200).json({ data: response.deliveryHistory });
+};
+
 /**
  * Phone Number already exists
  */
@@ -274,7 +300,8 @@ module.exports = {
   serializeUser,
   getVerificationCode,
   verifyCode,
-  resetPassword,
+  resetPasswordUsingPhone,
   loginRegister,
   addUserDetail,
+  deliveryHistory,
 };

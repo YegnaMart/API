@@ -9,7 +9,7 @@ const {
 const { checkAuth } = require('../middleware/check-auth');
 
 deliveryRouter.get('/available_delivery', availableDelivery);
-deliveryRouter.post('/add_delivery', add_delivery);
+deliveryRouter.post('/add_delivery',checkAuth, add_delivery);
 deliveryRouter.patch('/rate_delivery', rateDelivery);
 deliveryRouter.post('/edit_delivery/:deliveryId', edit_delivery_detail);
 // warehouseRouter.delete('/deleteDelivery/:deliveryId', deleteWarehouse);

@@ -7,6 +7,7 @@ const {
   post_product,
   edit_product,
   delete_product,
+  getProductByCategory,
 } = require('../controllers/product.controller');
 
 // authenitication middleware to check if the user is authorized or not
@@ -47,10 +48,10 @@ productRouter.route('/get_products').get(get_products);
 productRouter
   .route('/post_product')
   .post(upload.single('productImage'), checkAuth, post_product);
-productRouter.route('/edit_product/:product_id').post(
-  upload.single('productImage'),checkAuth,
-  edit_product
-);
+productRouter
+  .route('/edit_product/:product_id')
+  .post(upload.single('productImage'), checkAuth, edit_product);
+productRouter.get('/product_category', getProductByCategory);
 productRouter.route('/delete_product/:product_id').delete(delete_product);
 
 module.exports = productRouter;

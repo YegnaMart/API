@@ -8,9 +8,10 @@ const {
   serializeUser,
   getVerificationCode,
   verifyCode,
-  resetPassword,
+  resetPasswordUsingPhone,
   loginRegister,
   addUserDetail,
+  deliveryHistory,
 } = require('../controllers/user.controller');
 const { checkAuth } = require('../middleware/check-auth');
 // @user/register_consumer
@@ -59,7 +60,7 @@ userRouter.post('/verify_code', async (req, res) => await verifyCode(req.body));
 /**
  * reset password
  */
-userRouter.post('/reset_password/:phoneNo', resetPassword);
+userRouter.post('/reset_password/:phoneNo', resetPasswordUsingPhone);
 //@consumer Protected route
 userRouter.get(
   '/consumer_profile',
@@ -87,5 +88,7 @@ userRouter.get(
     return res.json(serializeUser(req.user));
   }
 );
+
+userRouter.get('/delivery_history', checkAuth, deliveryHistory);
 
 module.exports = userRouter;
