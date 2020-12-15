@@ -8,21 +8,15 @@ const { app } = require('../../index');
 
 dotenv.config({ path: './config/.env' });
 
-function register() {
-  return request(app)
-    .post('/user/register')
-    .send({
-      fullName: 'Yabu Yonas', // u are my son.
-      phoneNo: '0911981162',
-      email: 'tu_yihem_yichalal@gmail.com',
-      password:"12345678",
-      role: 'DeliveryAgent',
-      location: [9.03314, 38.75008],
-    });
+function login() {
+  return request(app).post('/user/login').send({
+    phoneNo: '0911981162',
+    password: '12345678',
+  });
 }
 
 // start the test for registration
-describe('POST /register', () => {
+describe('POST /login', () => {
   // before doing testing we checking connection
   before((done) => {
     connectDB()
@@ -35,12 +29,12 @@ describe('POST /register', () => {
   });
 
   it('OK, User Creates new account', () => {
-    return register().then((res) => {
-      // console.log('>>> ', res.body);
+    return login().then((res) => {
+      //   console.log('>>> ', res.body);
       if (res.body.success) {
         assert.ok('Valid');
       } else {
-        assert.fail(' Phone exists or somehting happeneds');
+        assert.fail(' Phone exists or something happeneds');
       }
     });
   });

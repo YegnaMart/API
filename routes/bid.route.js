@@ -8,6 +8,7 @@ const {
   closeBid,
   bidProduct,
   getBid,
+  bidCategory,
 } = require('../controllers/bid.controller');
 
 const { checkAuth } = require('../middleware/check-auth');
@@ -35,7 +36,13 @@ bidRouter.patch('/bid_product', checkAuth, bidProduct);
  * get a bid with respective bidders
  */
 
-bidRouter.get('/get_a_bid', getBid);
+bidRouter.post('/get_a_bid', getBid);
+
+/**
+ * categorize bid by status
+ */
+
+bidRouter.post('/bid_category', bidCategory);
 
 /**
  * closed the bid which have a winner

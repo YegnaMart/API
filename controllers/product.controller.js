@@ -33,7 +33,10 @@ const get_products = async (req, res) => {
 const getProductByCategory = async (req, res) => {
   try {
     const { productName } = req.body;
-    let response = await Product.find({ productName: productName });
+    let response = await Product.find({ productName: productName }).populate(
+      'postedBy',
+      'fullName'
+    );
     res.status(200).json({
       data: response,
       success: true,
@@ -69,7 +72,7 @@ const post_product = async (req, res) => {
       regionOfOrigin,
       price,
       description,
-      productImage: req.file.path,
+      // productImage: req.file.path,
       postedBy,
     });
 
@@ -80,10 +83,9 @@ const post_product = async (req, res) => {
       message: `New Product Inserted`,
     });
   } catch (error) {
-    const messages = Object.values(error.errors).map((value) => value.message);
     return res.status(500).json({
       message: 'unable to store data',
-      error: messages,
+      error: error,
     });
   }
 };

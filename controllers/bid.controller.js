@@ -210,6 +210,31 @@ const getBid = async (req, res) => {
   }
 };
 
+/**
+ *
+ * @param {status} req
+ * @param {Bid Category} res
+ */
+
+const bidCategory = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    let bids = await Bid.find({ status: status })
+      .populate('product', 'productName productImage')
+      .populate('postedBy', 'location');
+
+    res.status(200).json({
+      data: bids,
+      success: 'true',
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error,
+    });
+  }
+};
 // @ bid/close_bid
 // @ close expired bids
 // @ access authentic
@@ -308,4 +333,5 @@ module.exports = {
   bidProduct,
   getBid,
   closeBids,
+  bidCategory,
 };

@@ -8,21 +8,12 @@ const { app } = require('../../index');
 
 dotenv.config({ path: './config/.env' });
 
-function register() {
-  return request(app)
-    .post('/user/register')
-    .send({
-      fullName: 'Yabu Yonas', // u are my son.
-      phoneNo: '0911981162',
-      email: 'tu_yihem_yichalal@gmail.com',
-      password:"12345678",
-      role: 'DeliveryAgent',
-      location: [9.03314, 38.75008],
-    });
+function getProduct() {
+  return request(app).get('/product/get_products');
 }
 
 // start the test for registration
-describe('POST /register', () => {
+describe('POST /get_products', () => {
   // before doing testing we checking connection
   before((done) => {
     connectDB()
@@ -35,7 +26,7 @@ describe('POST /register', () => {
   });
 
   it('OK, User Creates new account', () => {
-    return register().then((res) => {
+    return getProduct().then((res) => {
       // console.log('>>> ', res.body);
       if (res.body.success) {
         assert.ok('Valid');
