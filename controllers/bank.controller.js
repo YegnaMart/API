@@ -2,34 +2,33 @@ const Bank = require('../models/bankAccount.model');
 const Transaction = require('../models/transaction.model');
 const Bid = require('../models/bid.model');
 
-const addBankAccount = async (req, res) => {
-  const { userId } = req.body;
-
+const addBankAccount = async (_userId) => {
+  console.log(_userId);
   try {
-    let user = await Bank.findOne({ userId: userId });
+    let user = await Bank.findOne({ userId: _userId });
     if (user) {
-      res.status(401).json({
+      return {
         message: `user already have an account`,
         success: false,
-      });
+      };
     } else {
       let newAccount = new Bank({
-        userId: userId,
+        userId: _userId,
         accountNo: randomInteger(9999, 9999999),
       });
 
       let account = await newAccount.save();
       //respond to the client
-      return res.status(201).json({
+      return {
         account,
         success: true,
-      });
+      };
     }
   } catch (error) {
-    return res.status(500).json({
+    return {
       message: 'unable to register new bank account user',
       error,
-    });
+    };
   }
 };
 
@@ -37,33 +36,30 @@ function randomInteger(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const doTransaction = async (req, res) => {
-  const {
-    creditedAccountUserId,
-    debitedAccountUserId,
-    amount,
-    bidId,
-  } = req.body;
+const doTransaction = async (req) => {
+  const { creditedAccountUserId, debitedAccountUserId, amount, bidId } = req;
 
   try {
     let bid = await Bid.findOne({ _id: bidId });
 
     if (!bid) {
-      res.status(404).json({
+      return {
         message: `bid  doesn't exist`,
         success: false,
-      });
+      };
     } else {
+      console.log(debitedAccountUserId);
       let accountHolder = await Bank.findOne({ userId: debitedAccountUserId });
+      console.log(accountHolder);
       let previousTransaction = await Transaction.findOne({
         bidId: bidId,
       });
 
       if (previousTransaction) {
-        res.status(401).json({
+        return {
           message: `Transaction has been processed before for provided Bid`,
           success: false,
-        });
+        };
       } else {
         let creditedAccountHolder = await Bank.findOne({
           userId: creditedAccountUserId,
@@ -108,21 +104,21 @@ const doTransaction = async (req, res) => {
             }
           );
 
-          res.status(201).json({
+          return {
             message: `transaction processed successfully`,
             debitedData,
             creditedData,
             success: true,
-          });
+          };
         }
       }
     }
   } catch (err) {
-    res.status(500).json({
+    return {
       message: `unable to complete transaction`,
       success: false,
       err,
-    });
+    };
   }
 };
 

@@ -4,6 +4,12 @@ const jwt = require('jsonwebtoken');
 let config = require('../config/config');
 let User = require('../models/user.model');
 let client = require('twilio')(config.accountSID, config.authToken);
+
+/**
+ * Import bank
+ */
+
+const { addBankAccount } = require('../controllers/bank.controller');
 // @user/register
 // @ create the account for  users
 // access Public
@@ -73,6 +79,8 @@ const registerUser = async (userData, res) => {
     const data = await newUser.save();
     console.log(data);
 
+    let bankCreated = await addBankAccount(data._id);
+    console.log(bankCreated);
     let token = jwt.sign(
       {
         user_id: data._id,
@@ -89,6 +97,7 @@ const registerUser = async (userData, res) => {
       data: {
         _id: data._id,
         token: token,
+        bankCreated,
       },
       message: 'You have successfully signed up.',
       success: true,

@@ -65,7 +65,7 @@ app.listen(PORT, () => {
   );
 });
 
-openBids();
+closeBids();
 nodecron.schedule('* * * * *', () => {
   console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
   openBids();

@@ -1,6 +1,8 @@
 const Bid = require('../models/bid.model');
 const Product = require('../models/product.model');
 const moment = require('moment');
+
+const { doTransaction } = require('./bank.controller');
 // @bid/get_bids
 // @ get all bids
 // access authentic
@@ -199,6 +201,7 @@ const getBid = async (req, res) => {
 
     return res.status(200).json({
       data: {
+        closingDate: bid.closingDate,
         status: bid.status,
         bidders: sortedOffer,
         product: bid.product,
@@ -298,6 +301,7 @@ const checkSchedulesBids = async () => {
 const closeBids = async () => {
   try {
     let toBeClosed = [];
+    let needTransaction = [];
     let bids = await Bid.find();
 
     // console.log(bids);
@@ -306,9 +310,42 @@ const closeBids = async () => {
     bids.forEach((_bid) => {
       if (moment(parseInt(_bid.closingDate)).isBefore(moment())) {
         toBeClosed.push(_bid._id);
+
+        let bidForTransaction = _bid;
+        let sortedOffer = bidForTransaction.bidders.sort(
+          (a, b) => b.offer - a.offer
+        );
+        bidForTransaction.bidders = sortedOffer;
+
+        needTransaction.push(bidForTransaction);
       } else {
         //Do nothing
       }
+    });
+
+    let promises = [];
+
+    needTransaction.forEach((_bid) => {
+      let _bidders = _bid.bidders;
+      if (_bidders.length > 0) {
+        let _winner = _bidders[0].bidder;
+        let amount = _bidders[0].offer;
+        let _postedBy = _bid.postedBy;
+
+        let transactionObj = {
+          creditedAccountUserId: _postedBy,
+          debitedAccountUserId: _winner,
+          amount,
+          bidId: _bid._id,
+        };
+
+        console.log(transactionObj);
+        promises.push(doTransaction(transactionObj));
+      }
+    });
+
+    Promise.all(promises).then((_promises) => {
+      console.log(_promises);
     });
 
     if (toBeClosed != []) {
