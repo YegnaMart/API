@@ -22,8 +22,9 @@ const bankRouter = require('./routes/bank.route');
 
 // call for close
 const {
-  // closeBids,
+  closeBids,
   checkSchedulesBids,
+  openBids,
 } = require('./controllers/bid.controller');
 // create instance of the app
 const app = express();
@@ -64,10 +65,12 @@ app.listen(PORT, () => {
   );
 });
 
+openBids();
 nodecron.schedule('* * * * *', () => {
-  // console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
-  // closeBids();
-  // checkSchedulesBids();
+  console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
+  openBids();
+  checkSchedulesBids();
+  closeBids();
 });
 
 module.exports = {

@@ -5,7 +5,7 @@ function importTest(name, path) {
 }
 
 // var common = require('./common');
-let register = require('./product/getProduct')
+let register = require('./product/getProduct');
 
 describe('index', function () {
   beforeEach(function () {

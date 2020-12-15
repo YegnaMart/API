@@ -187,18 +187,22 @@ const bidProduct = async (req, res) => {
 const getBid = async (req, res) => {
   try {
     const { bidNo } = req.body;
-    console.log(bidNo);
+    // console.log(bidNo);
     let bid = await Bid.findOne({ bidNo: bidNo })
       .populate('product')
       .populate('postedBy', 'placeName')
       .populate('bidders.bidder');
     // const bid = await Bid.findOne({ bidNo: bidNo }).populate('bidders.bidder', 'fullName phoneNo');
 
-    console.log(bid);
-    let sortOffer = bid.bidders.sort((a, b) => b.offer - a.offer);
+    // console.log(bid);
+    let sortedOffer = bid.bidders.sort((a, b) => b.offer - a.offer);
 
     return res.status(200).json({
-      data: sortOffer,
+      data: {
+        status: bid.status,
+        bidders: sortedOffer,
+        product: bid.product,
+      },
       message: `bid with number ${bidNo}`,
       success: true,
     });
@@ -262,11 +266,11 @@ const checkSchedulesBids = async () => {
     let tobeOpened = [];
     let bids = await Bid.find();
 
-    console.log(bids);
+    // console.log(bids);
     if (bids.length == 0) return;
 
     bids.forEach((_bid) => {
-      if (moment(_bid.startingDate).isAfter(moment())) {
+      if (moment(parseInt(_bid.startingDate)).isAfter(moment())) {
         tobeOpened.push(_bid._id);
       } else {
         //Do nothing
@@ -274,7 +278,7 @@ const checkSchedulesBids = async () => {
     });
 
     if (tobeOpened != []) {
-      var bulk = People.collection.initializeOrderedBulkOp();
+      var bulk = Bid.collection.initializeOrderedBulkOp();
       bulk
         .find({ _id: { $in: tobeOpened } })
         .update({ $set: { status: 'opened' } });
@@ -282,7 +286,7 @@ const checkSchedulesBids = async () => {
         if (err) {
           console.log(err);
         } else {
-          console.log('Scheduled Bids ', toBeClosed, ' Opened Successfully');
+          // console.log('Scheduled Bids ', tobeOpened, ' Opened Successfully');
         }
       });
     }
@@ -296,11 +300,11 @@ const closeBids = async () => {
     let toBeClosed = [];
     let bids = await Bid.find();
 
-    console.log(bids);
+    // console.log(bids);
     if (bids.length == 0) return;
 
     bids.forEach((_bid) => {
-      if (moment(_bid.closingDate).isBefore(moment())) {
+      if (moment(parseInt(_bid.closingDate)).isBefore(moment())) {
         toBeClosed.push(_bid._id);
       } else {
         //Do nothing
@@ -308,7 +312,7 @@ const closeBids = async () => {
     });
 
     if (toBeClosed != []) {
-      var bulk = People.collection.initializeOrderedBulkOp();
+      var bulk = Bid.collection.initializeOrderedBulkOp();
       bulk
         .find({ _id: { $in: toBeClosed } })
         .update({ $set: { status: 'closed' } });
@@ -316,12 +320,47 @@ const closeBids = async () => {
         if (err) {
           console.log(err);
         } else {
-          console.log(' Bids ', toBeClosed, ' Closed Successfully');
+          // console.log(' Bids ', toBeClosed, ' Closed Successfully');
         }
       });
     }
   } catch (err) {
     console.log('error while closing bids ');
+    console.log(err);
+  }
+};
+
+const openBids = async () => {
+  try {
+    let tobeOpened = [];
+    let bids = await Bid.find();
+
+    // console.log(bids);
+    if (bids.length == 0) return;
+
+    bids.forEach((_bid) => {
+      if (_bid.status === 'inactive') {
+        tobeOpened.push(_bid._id);
+      } else {
+        //Do nothing
+      }
+    });
+
+    if (tobeOpened != []) {
+      var bulk = Bid.collection.initializeOrderedBulkOp();
+      bulk
+        .find({ _id: { $in: tobeOpened } })
+        .update({ $set: { status: 'opened' } });
+      bulk.execute((err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          // console.log(' InActive Bids ', tobeOpened, ' Opened Successfully');
+        }
+      });
+    }
+  } catch (err) {
+    console.log('error while opnening inActive bids ');
   }
 };
 
@@ -334,4 +373,6 @@ module.exports = {
   getBid,
   closeBids,
   bidCategory,
+  checkSchedulesBids,
+  openBids,
 };
