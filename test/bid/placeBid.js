@@ -8,28 +8,22 @@ const { app } = require('../../index');
 
 dotenv.config({ path: './config/.env' });
 
-function postProduct() {
+function placeBid() {
   return request(app)
-    .post('/product/post_product')
-    .send({
-      productName: 'Barley',
-      category: 'organic',
-      quantity: 500,
-      regionOfOrigin: 'bahir Dar',
-      amount: 430,
-      price: 3500,
-      postedBy: '5fd605d4e0f0780db4870bc4',
-      description:
-        'sdfhgh egdskljhfdsgkljhdsf lkjs kjlhsdfkjghsd fkljghdsfgkljhds gkljdshf jjkhsdgkjl hjklgdshgkjldfgh',
-    })
+    .post('/bid/bid_product')
     .set(
       'Authorization',
       'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWZkOGU5ZTk1YzcxNzEyZjg4YTNkODY1Iiwicm9sZSI6IkZhcm1lciIsInBob25lTm8iOiIwOTM0NzEyODg5NCIsImlhdCI6MTYwODA1MTE5NiwiZXhwIjoxNjA4MTM3NTk2fQ.2PWmjQ3sggzYL6kFuK7oP-A7ePpTWcdVlcVm2AFEoag'
-    );
+    )
+    .send({
+      offer: 70000,
+      id: '5fd8c9d5cf4a0f06ccf79ac1',
+    });
 }
 
 // start the test for registration
-describe('POST /postProduct', () => {
+describe('POST /bid_product', () => {
+  //is this the test-suite ? Yeah for bid_product
   // before doing testing we checking connection
   before((done) => {
     connectDB()
@@ -41,14 +35,19 @@ describe('POST /postProduct', () => {
       });
   });
 
-  it('OK, post new a Product', () => {
-    return postProduct().then((res) => {
-      // console.log('>>> ', res.body.success);
-      if (res.body.success) {
-        assert.ok('Valid');
-      } else {
-        assert.fail('Unable to post new product');
-      }
-    });
+  it('OK, bid For Product', () => {
+    return placeBid()
+      .set(
+        'Authorization',
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWZkOGU5ZTk1YzcxNzEyZjg4YTNkODY1Iiwicm9sZSI6IkZhcm1lciIsInBob25lTm8iOiIwOTM0NzEyODg5NCIsImlhdCI6MTYwODA1MTE5NiwiZXhwIjoxNjA4MTM3NTk2fQ.2PWmjQ3sggzYL6kFuK7oP-A7ePpTWcdVlcVm2AFEoag'
+      )
+      .then((res) => {
+        //   console.log('>>> Bids', res.body);
+        if (res.body.success) {
+          assert.ok('Valid');
+        } else {
+          assert.fail('Unable to get Bid Detail');
+        }
+      });
   });
 });

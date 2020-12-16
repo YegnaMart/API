@@ -3,6 +3,7 @@ const { Schema, model } = require('mongoose');
 const productSchema = new Schema({
   productName: {
     type: String,
+    enum:["Maize", "Barley", "Wheat", "Teff", "Coffee"],
     required: true,
   },
   category: {
@@ -33,6 +34,10 @@ const productSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  isPurchased: {
+    type: Boolean,
+    default: false,
   },
 });
 

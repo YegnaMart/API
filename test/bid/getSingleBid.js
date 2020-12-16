@@ -8,12 +8,14 @@ const { app } = require('../../index');
 
 dotenv.config({ path: './config/.env' });
 
-function getProduct() {
-  return request(app).get('/product/get_products');
+function getABid() {
+  return request(app).post('/bid/get_a_bid').send({
+    bidNo: 'BID-5942',
+  });
 }
 
 // start the test for registration
-describe('GET /get_products', () => {
+describe('POST /get_a_bid', () => {
   // before doing testing we checking connection
   before((done) => {
     connectDB()
@@ -25,13 +27,13 @@ describe('GET /get_products', () => {
       });
   });
 
-  it('OK, Getting all Products', () => {
-    return getProduct().then((res) => {
-      // console.log('>>> ', res.body);
+  it('OK, get bid detail', () => {
+    return getABid().then((res) => {
+      //   console.log('>>> Bids', res.body);
       if (res.body.success) {
         assert.ok('Valid');
       } else {
-        assert.fail(' Phone exists or somehting happeneds');
+        assert.fail('Unable to get Bid Detail');
       }
     });
   });

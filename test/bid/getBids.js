@@ -8,12 +8,12 @@ const { app } = require('../../index');
 
 dotenv.config({ path: './config/.env' });
 
-function getProduct() {
-  return request(app).get('/product/get_products');
+function getBids() {
+  return request(app).get('/bid/get_bids');
 }
 
 // start the test for registration
-describe('GET /get_products', () => {
+describe('GET /get_bids', () => {
   // before doing testing we checking connection
   before((done) => {
     connectDB()
@@ -25,9 +25,9 @@ describe('GET /get_products', () => {
       });
   });
 
-  it('OK, Getting all Products', () => {
-    return getProduct().then((res) => {
-      // console.log('>>> ', res.body);
+  it('OK, User Creates new account', () => {
+    return getBids().then((res) => {
+      // console.log('>>> Bids', res.body);
       if (res.body.success) {
         assert.ok('Valid');
       } else {

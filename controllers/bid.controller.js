@@ -159,26 +159,45 @@ const bidProduct = async (req, res) => {
     // const { biddingFee } = req.body;
     // let userDetails = req.user;
     let userDetails = req.user;
-    let response = await Bid.findOneAndUpdate(
-      { _id: id },
-      {
-        $push: {
-          bidders: {
-            bidder: userDetails.user_id,
-            offer: offer, // modified the bid with their respective offer
+    let _bid = await Bid.findOne({ _id: id });
+
+    if (_bid) {
+      console.log(_bid.initialBiddingPrice , offer , " OFFER ")
+      if (_bid.initialBiddingPrice < offer) {
+        let response = await Bid.findOneAndUpdate(
+          { _id: id },
+          {
+            $push: {
+              bidders: {
+                bidder: userDetails.user_id,
+                offer: offer, // modified the bid with their respective offer
+              },
+            },
           },
-        },
-      },
-      { new: true, useFindAndModify: false }
-    );
-    return res.status(201).json({
-      data: response,
-      message: 'Bid for product successfull',
-      success: true,
-    });
+          { new: true, useFindAndModify: false }
+        );
+        console.log(response, ' >>> ');
+        return res.status(201).json({
+          data: response,
+          message: 'Bid for product successfull',
+          success: true,
+        });
+      } else {
+        return res.status(500).json({
+          message: `You should offer more than ${_bid.initialBiddingPrice}`,
+          success: true,
+        });
+      }
+    } else {
+      return res.status(404).json({
+        message: `Bid not found ${id}`,
+        success: false,
+      });
+    }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
-      error,
+      error: error,
     });
   }
 };

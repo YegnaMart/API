@@ -23,7 +23,12 @@ const add_delivery = async (req, res) => {
     // {{userId}}
 
     const user_id = req.user.user_id;
-    let { pickup_location, dropoff_location, quintal_per_km, rate } = req.body;
+    let {
+      pickup_location,
+      dropoff_location,
+      quintal_per_km,
+      rate,
+    } = req.body;
 
     let new_delivery = new Delivery({
       deliveryId: user_id,
@@ -50,6 +55,7 @@ const add_delivery = async (req, res) => {
       success: true,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: 'unable to add delivery',
       success: false,
@@ -118,8 +124,6 @@ const rateDelivery = async (req, res) => {
     });
   }
 };
-
-const deliveryHistory = async (req, res) => {};
 
 module.exports = {
   availableDelivery,

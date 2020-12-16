@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 let Product = require('../models/product.model');
-
+let User = require('../models/user.model');
+const { doTransaction } = require('./bank.controller');
 // @product/display /see
 // @ show product
 // access Public
@@ -72,14 +73,14 @@ const post_product = async (req, res) => {
       regionOfOrigin,
       price,
       description,
-      // productImage: req.file.path,
+      productImage: req.file.path,
       postedBy,
     });
 
     const product = await new_product.save();
     return res.status(201).json({
       data: product,
-      sucess: true,
+      success: true,
       message: `New Product Inserted`,
     });
   } catch (error) {
@@ -149,10 +150,53 @@ const delete_product = async (req, res) => {
   }
 };
 
+const purchaseProduct = async (req, res) => {
+  const { product_id, purchaser_id } = req.body;
+
+  try {
+    let _product = await Product.findOne({ _id: product_id });
+    let _purchaser = await User.findOne({ _id: purchaser_id });
+    if (_product && _purchaser) {
+      let transactionObj = {
+        creditedAccountUserId: _product.postedBy,
+        debitedAccountUserId: purchaser_id,
+        amount: _product.price,
+        purchase: true,
+      };
+
+      doTransaction(transactionObj).then((_transaction) => {
+        if (_transaction && _transaction.success) {
+          Product.findByIdAndUpdate(
+            { _id: _product._id },
+            { isPurchased: true },
+            { new: true }
+          ).then((_updatedProduct) => {
+            if (_updatedProduct) {
+              console.log('Item purchased successfully');
+              return res.status(201).json(_transaction);
+            } else {
+              console.log('Unable to update purchase status');
+              return res.status(500).json(_transaction);
+            }
+          });
+        } else {
+          return res.status(500).json(_transaction);
+        }
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      succuss: false,
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   get_products,
   post_product,
   edit_product,
   delete_product,
   getProductByCategory,
+  purchaseProduct,
 };

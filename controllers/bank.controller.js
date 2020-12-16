@@ -37,25 +37,31 @@ function randomInteger(min, max) {
 }
 
 const doTransaction = async (req) => {
-  const { creditedAccountUserId, debitedAccountUserId, amount, bidId } = req;
+  const {
+    creditedAccountUserId,
+    debitedAccountUserId,
+    amount,
+    bidId,
+    purchase = false,
+  } = req;
 
   try {
     let bid = await Bid.findOne({ _id: bidId });
 
-    if (!bid) {
+    if (!bid && !purchase) {
+      //endezih new the logic // i think meselegn
       return {
         message: `bid  doesn't exist`,
         success: false,
       };
     } else {
-      console.log(debitedAccountUserId);
       let accountHolder = await Bank.findOne({ userId: debitedAccountUserId });
-      console.log(accountHolder);
+
       let previousTransaction = await Transaction.findOne({
         bidId: bidId,
       });
 
-      if (previousTransaction) {
+      if (previousTransaction && !purchase) {
         return {
           message: `Transaction has been processed before for provided Bid`,
           success: false,
@@ -66,10 +72,10 @@ const doTransaction = async (req) => {
         });
 
         if (amount > accountHolder.balance) {
-          res.status(401).json({
+          return {
             message: `You don't have sufficient amount to transaction`,
             success: false,
-          });
+          };
         } else {
           let transact = new Transaction({
             bidId: bidId,

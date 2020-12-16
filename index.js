@@ -65,12 +65,13 @@ app.listen(PORT, () => {
   );
 });
 
-closeBids();
+openBids();
+// closeBids();
 nodecron.schedule('* * * * *', () => {
-  console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
-  openBids();
-  checkSchedulesBids();
-  closeBids();
+  // console.log('Cron Run at ', moment().format('YYYY-MM-DD HH:mm:ss'));
+  // openBids();
+  // checkSchedulesBids();
+  // closeBids();
 });
 
 module.exports = {

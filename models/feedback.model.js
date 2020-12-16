@@ -16,4 +16,4 @@ const feedbackShema = new Schema({
   },
 });
 
-module.exports = model('feedabck', feedbackShema);
+module.exports = model('feedback', feedbackShema);
