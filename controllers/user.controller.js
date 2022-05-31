@@ -1,15 +1,15 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-let config = require('../config/config');
-let User = require('../models/user.model');
-let client = require('twilio')(config.accountSID, config.authToken);
+let config = require("../config/config");
+let User = require("../models/user.model");
+let client = require("twilio")(config.accountSID, config.authToken);
 
 /**
  * Import bank
  */
 
-const { addBankAccount } = require('../controllers/bank.controller');
+const { addBankAccount } = require("../controllers/bank.controller");
 // @user/register
 // @ create the account for  users
 // access Public
@@ -58,9 +58,18 @@ const registerUser = async (userData, res) => {
   try {
     //check if phone number already exists
     let phoneNoTaken = await validatePhoneNumber(userData.phoneNo);
+    let email = await validateEmail(userData.email);
     if (phoneNoTaken) {
       return res.status(400).json({
-        message: 'Phone Number Already Used, try another.',
+        message: "Phone Number Already Used, try another.",
+        success: false,
+      });
+    }
+
+    /* Checking if the email is already used. */
+    if (email) {
+      return res.status(400).json({
+        message: "Email Already Used, try another.",
         success: false,
       });
     }
@@ -90,7 +99,7 @@ const registerUser = async (userData, res) => {
         phoneNo: data.phoneNo,
       },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
 
     return res.status(201).json({
@@ -99,12 +108,12 @@ const registerUser = async (userData, res) => {
         token: token,
         bankCreated,
       },
-      message: 'You have successfully signed up.',
+      message: "You have successfully signed up.",
       success: true,
     });
   } catch (err) {
     return res.status(500).json({
-      message: 'unable to create an account',
+      message: "unable to create an account",
       success: false,
       err: err,
     });
@@ -122,7 +131,7 @@ const logUser = async (userData, res, firebaseUid = false) => {
   let user = await User.findOne({ phoneNo: phoneNo });
   if (!user) {
     return res.status(404).json({
-      message: 'PhoneNo noT found, invalid login credentials',
+      message: "PhoneNo not found, invalid login credentials",
       success: false,
     });
   } else {
@@ -140,7 +149,7 @@ const logUser = async (userData, res, firebaseUid = false) => {
           phoneNo: user.phoneNo,
         },
         process.env.JWT_SECRET,
-        { expiresIn: '24h' }
+        { expiresIn: "24h" }
       );
 
       // check the result
@@ -158,12 +167,12 @@ const logUser = async (userData, res, firebaseUid = false) => {
 
       return res.status(200).json({
         data: result,
-        message: 'You are Logged in',
+        message: "You are Logged in",
         success: true,
       });
     } else {
       return res.status(403).json({
-        message: 'incorrect password',
+        message: "incorrect password",
         success: false,
       });
     }
@@ -193,7 +202,7 @@ const resetPasswordUsingPhone = (req, res) => {
               })
               .catch((err) => {
                 res.json({
-                  message: 'unable to update password',
+                  message: "unable to update password",
                   success: false,
                 });
               });
@@ -202,7 +211,7 @@ const resetPasswordUsingPhone = (req, res) => {
       })
       .catch((err) => {
         res.status(500).json({
-          message: 'unable to reset password',
+          message: "unable to reset password",
           err,
         });
       });
@@ -257,7 +266,7 @@ const deliveryHistory = async (req, res) => {
   const id = req.user.user_id;
   console.log(id);
   let response = await User.findOne({ _id: id }).populate(
-    'deliveryHistory.delivery'
+    "deliveryHistory.delivery"
   );
   console.log(response.deliveryHistory);
   res.status(200).json({ data: response.deliveryHistory });
@@ -287,7 +296,7 @@ const checkRole = (roles) => (req, res, next) => {
   roles.includes(req.user.role)
     ? next()
     : res.status(401).json({
-        message: 'unAuthorized',
+        message: "unAuthorized",
         success: false,
       });
 };
