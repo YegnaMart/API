@@ -40,12 +40,14 @@ let addUserDetail = async (userData, res) => {
     },
     { new: true, useFindAndModify: false }
   );
+  console.log("Data ---->", data)
 
   if (!data) {
-    res.status(500).json({
-      success: false,
-      message: `unable to create user`,
-    });
+    // res.status(500).json({
+    //   success: false,
+    //   message: `unable to create user`,
+    // });
+    registerUser(userData, res);
   } else {
     res.status(201).json({
       data: data,
@@ -58,7 +60,7 @@ const registerUser = async (userData, res) => {
   try {
     //check if phone number already exists
     let phoneNoTaken = await validatePhoneNumber(userData.phoneNo);
-    let email = await validateEmail(userData.email);
+    let user = await validateEmail(userData.email);
     if (phoneNoTaken) {
       return res.status(400).json({
         message: "Phone Number Already Used, try another.",
@@ -67,7 +69,8 @@ const registerUser = async (userData, res) => {
     }
 
     /* Checking if the email is already used. */
-    if (email) {
+    console.log("user --->", user)
+    if (user) {
       return res.status(400).json({
         message: "Email Already Used, try another.",
         success: false,
@@ -79,14 +82,16 @@ const registerUser = async (userData, res) => {
      */
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
+    let generate_four_digit = Math.floor(1000 + Math.random() * 9000);
     const newUser = new User({
       ...userData,
       password: hashedPassword,
+      email:`yegnamart${generate_four_digit}@gmail.com`
     });
 
     // register user into the database
     const data = await newUser.save();
-    console.log(data);
+    console.log("data",data);
 
     let bankCreated = await addBankAccount(data._id);
     console.log(bankCreated);
@@ -284,8 +289,12 @@ const validatePhoneNumber = async (phoneNo) => {
  * Check if email already exists
  */
 let validateEmail = async (email) => {
-  let user = User.findOne({ email });
-  return user;
+  if ( email === undefined ) {
+    return;
+  } else {
+    let user = User.findOne({ email });
+    return user;
+  }
 };
 
 /**
