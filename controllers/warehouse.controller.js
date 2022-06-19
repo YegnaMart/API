@@ -1,5 +1,12 @@
 const Warehouse = require('../models/warehouse.model');
 
+/**
+ * It's an async function that uses the mongoose model to find all the warehouses in the database and
+ * returns them in a json response
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns An array of warehouses
+ */
 const getWarehouses = async (req, res) => {
   try {
     const warehouses = await Warehouse.find();
@@ -15,7 +22,14 @@ const getWarehouses = async (req, res) => {
   }
 };
 
+/**
+ * It takes in a request and a response object, and returns a response object
+ * @param req - The request object. This contains information about the HTTP request that raised the
+ * event.
+ * @param res - The response object.
+ */
 const addWarehouse = async (req, res) => {
+  console.log("body request", req.body)
   try {
     const {
       warehouse_code,
@@ -24,7 +38,6 @@ const addWarehouse = async (req, res) => {
       region,
       storage_capacity,
     } = req.body;
-
     let newWarehouse = new Warehouse({
       warehouse_code,
       placeName,
@@ -48,6 +61,14 @@ const addWarehouse = async (req, res) => {
   }
 };
 
+/**
+ * It updates the warehouse details of a warehouse with a given id
+ * @param req - This is the request object. It contains information about the HTTP request that raised
+ * the event.
+ * @param res - The response object.
+ * @returns a response object with a status code of 201 and a json object with a message and success
+ * property.
+ */
 const editWarehouseDetail = async (req, res) => {
   const id = req.params.warehouse_id;
   try {
@@ -72,6 +93,13 @@ const editWarehouseDetail = async (req, res) => {
   }
 };
 
+/**
+ * It deletes a warehouse from the database
+ * @param req - The request object. This contains information about the HTTP request that raised the
+ * event.
+ * @param res - the response object
+ * @returns a promise.
+ */
 const deleteWarehouse = async (req, res) => {
   const id = req.params.warehouse_id;
   try {

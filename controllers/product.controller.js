@@ -54,7 +54,9 @@ const getProductByCategory = async (req, res) => {
 // @ post product
 // access authentic/must login to their account
 const post_product = async (req, res) => {
+  
   try {
+    console.log("posted product", req.body)
     const {
       postedBy,
       productName,
@@ -64,6 +66,7 @@ const post_product = async (req, res) => {
       price,
       description,
     } = req.body;
+
 
     let new_product = new Product({
       postedBy,

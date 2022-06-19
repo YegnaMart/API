@@ -1,3 +1,4 @@
+/* The above code is creating a router for the warehouse. */
 const warehouseRouter = require('express').Router();
 const {
   getWarehouses,
