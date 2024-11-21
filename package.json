@@ -4,7 +4,8 @@
   "description": "yegna-mart api ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive --exit  --timeout 10000",
+    "server": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,28 @@
   },
   "homepage": "https://github.com/YegnaMart/API#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "chalk": "^4.1.2",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.9.2",
-    "nodemon": "^2.0.2"
+    "jsonwebtoken": "^8.5.1",
+    "localtunnel": "^2.0.2",
+    "lodash": "^4.17.20",
+    "mocha": "^8.2.1",
+    "moment": "^2.29.1",
+    "mongoose": "^5.13.14",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^6.4.14",
+    "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "supertest": "^6.0.1",
+    "twilio": "^3.39.5",
+    "uuid": "^8.3.1"
   }
 }
